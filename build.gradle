@@ -1,0 +1,106 @@
+plugins {
+    id 'java'
+}
+
+group 'org.example'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+jar {
+    into 'resources', {
+        from 'resources'
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation group: 'com.jayway.jsonpath', name: 'json-path', version: '2.7.0'
+    implementation group: 'org.jdom', name: 'jdom', version: '2.0.0'
+
+
+    implementation group: 'net.bramp.ffmpeg', name: 'ffmpeg', version: '0.6.2'
+
+    implementation platform("org.lwjgl:lwjgl-bom:3.2.3")
+
+
+    implementation "org.joml:joml:1.10.0"
+    implementation "org.joml:joml-primitives:1.10.0"
+
+    implementation "org.lwjgl:lwjgl"
+    implementation "org.lwjgl:lwjgl-assimp"
+    implementation "org.lwjgl:lwjgl-bgfx"
+    implementation "org.lwjgl:lwjgl-cuda"
+    implementation "org.lwjgl:lwjgl-egl"
+    implementation "org.lwjgl:lwjgl-glfw"
+    implementation "org.lwjgl:lwjgl-jawt"
+    implementation "org.lwjgl:lwjgl-jemalloc"
+    implementation "org.lwjgl:lwjgl-libdivide"
+    implementation "org.lwjgl:lwjgl-llvm"
+    implementation "org.lwjgl:lwjgl-lmdb"
+    implementation "org.lwjgl:lwjgl-lz4"
+    implementation "org.lwjgl:lwjgl-meow"
+    implementation "org.lwjgl:lwjgl-nanovg"
+    implementation "org.lwjgl:lwjgl-nfd"
+    implementation "org.lwjgl:lwjgl-nuklear"
+    implementation "org.lwjgl:lwjgl-odbc"
+    implementation "org.lwjgl:lwjgl-openal"
+    implementation "org.lwjgl:lwjgl-opencl"
+    implementation "org.lwjgl:lwjgl-opengl"
+    implementation "org.lwjgl:lwjgl-opengles"
+    implementation "org.lwjgl:lwjgl-openvr"
+    implementation "org.lwjgl:lwjgl-opus"
+    implementation "org.lwjgl:lwjgl-ovr"
+    implementation "org.lwjgl:lwjgl-par"
+    implementation "org.lwjgl:lwjgl-remotery"
+    implementation "org.lwjgl:lwjgl-rpmalloc"
+    implementation "org.lwjgl:lwjgl-shaderc"
+    implementation "org.lwjgl:lwjgl-sse"
+    implementation "org.lwjgl:lwjgl-stb"
+    implementation "org.lwjgl:lwjgl-tinyexr"
+    implementation "org.lwjgl:lwjgl-tinyfd"
+    implementation "org.lwjgl:lwjgl-tootle"
+    implementation "org.lwjgl:lwjgl-vma"
+    implementation "org.lwjgl:lwjgl-vulkan"
+    implementation "org.lwjgl:lwjgl-xxhash"
+    implementation "org.lwjgl:lwjgl-yoga"
+    implementation "org.lwjgl:lwjgl-zstd"
+    runtimeOnly "org.lwjgl:lwjgl::natives-windows"
+    runtimeOnly "org.lwjgl:lwjgl-assimp::natives-windows"
+    runtimeOnly "org.lwjgl:lwjgl-bgfx::natives-windows"
+    runtimeOnly "org.lwjgl:lwjgl-glfw::natives-windows"
+    runtimeOnly "org.lwjgl:lwjgl-jemalloc::natives-windows"
+    runtimeOnly "org.lwjgl:lwjgl-libdivide::natives-windows"
+    runtimeOnly "org.lwjgl:lwjgl-llvm::natives-windows"
+    runtimeOnly "org.lwjgl:lwjgl-lmdb::natives-windows"
+    runtimeOnly "org.lwjgl:lwjgl-lz4::natives-windows"
+    runtimeOnly "org.lwjgl:lwjgl-meow::natives-windows"
+    runtimeOnly "org.lwjgl:lwjgl-nanovg::natives-windows"
+    runtimeOnly "org.lwjgl:lwjgl-nfd::natives-windows"
+    runtimeOnly "org.lwjgl:lwjgl-nuklear::natives-windows"
+    runtimeOnly "org.lwjgl:lwjgl-openal::natives-windows"
+    runtimeOnly "org.lwjgl:lwjgl-opengl::natives-windows"
+    runtimeOnly "org.lwjgl:lwjgl-opengles::natives-windows"
+    runtimeOnly "org.lwjgl:lwjgl-openvr::natives-windows"
+    runtimeOnly "org.lwjgl:lwjgl-opus::natives-windows"
+    runtimeOnly "org.lwjgl:lwjgl-ovr::natives-windows"
+    runtimeOnly "org.lwjgl:lwjgl-par::natives-windows"
+    runtimeOnly "org.lwjgl:lwjgl-remotery::natives-windows"
+    runtimeOnly "org.lwjgl:lwjgl-rpmalloc::natives-windows"
+    runtimeOnly "org.lwjgl:lwjgl-shaderc::natives-windows"
+    runtimeOnly "org.lwjgl:lwjgl-sse::natives-windows"
+    runtimeOnly "org.lwjgl:lwjgl-stb::natives-windows"
+    runtimeOnly "org.lwjgl:lwjgl-tinyexr::natives-windows"
+    runtimeOnly "org.lwjgl:lwjgl-tinyfd::natives-windows"
+    runtimeOnly "org.lwjgl:lwjgl-tootle::natives-windows"
+    runtimeOnly "org.lwjgl:lwjgl-vma::natives-windows"
+    runtimeOnly "org.lwjgl:lwjgl-xxhash::natives-windows"
+    runtimeOnly "org.lwjgl:lwjgl-yoga::natives-windows"
+    runtimeOnly "org.lwjgl:lwjgl-zstd::natives-windows"
+}
+
+test {
+    useJUnitPlatform()
+}
