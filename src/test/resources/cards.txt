@@ -1,0 +1,89 @@
+26,36   : 294,230  :  red  :  one    : diamond :  hollow
+306,36  : 574,230  :  red  :  two    : diamond :  hollow
+586,36  : 854,230  :  red  :  three  : diamond :  hollow
+866,36  : 1134,230 :  red  :  one    : ellipse :  hollow
+1146,36 : 1414,230 :  red  :  two    : ellipse :  hollow
+1426,36 : 1694,230 :  red  :  three  : ellipse :  hollow
+1706,36 : 1974,230 :  red  :  one    : wave    :  hollow
+1986,36 : 2254,230 :  red  :  two    : wave    :  hollow
+2266,36 : 2531,230 :  red  :  three  : wave    :  hollow
+
+26,239   : 294,433  :  red  :  one    : diamond :  stripes
+306,239  : 574,433  :  red  :  two    : diamond :  stripes
+586,239  : 854,433  :  red  :  three  : diamond :  stripes
+866,239  : 1134,433 :  red  :  one    : ellipse :  stripes
+1146,239 : 1414,433 :  red  :  two    : ellipse :  stripes
+1426,239 : 1694,433 :  red  :  three  : ellipse :  stripes
+1706,239 : 1974,433 :  red  :  one    : wave    :  stripes
+1986,239 : 2254,433 :  red  :  two    : wave    :  stripes
+2266,239 : 2531,433 :  red  :  three  : wave    :  stripes
+
+26,442   : 294,636  :  red  :  one    : diamond :  solid
+306,442  : 574,636  :  red  :  two    : diamond :  solid
+586,442  : 854,636  :  red  :  three  : diamond :  solid
+866,442  : 1134,636 :  red  :  one    : ellipse :  solid
+1146,442 : 1414,636 :  red  :  two    : ellipse :  solid
+1426,442 : 1694,636 :  red  :  three  : ellipse :  solid
+1706,442 : 1974,636 :  red  :  one    : wave    :  solid
+1986,442 : 2254,636 :  red  :  two    : wave    :  solid
+2266,442 : 2531,636 :  red  :  three  : wave    :  solid
+
+26,645   : 294,839  :  green :  one    : diamond :  hollow
+306,645  : 574,839  :  green :  two    : diamond :  hollow
+586,645  : 854,839  :  green :  three  : diamond :  hollow
+866,645  : 1134,839 :  green :  one    : ellipse :  hollow
+1146,645 : 1414,839 :  green :  two    : ellipse :  hollow
+1426,645 : 1694,839 :  green :  three  : ellipse :  hollow
+1706,645 : 1974,839 :  green :  one    : wave    :  hollow
+1986,645 : 2254,839 :  green :  two    : wave    :  hollow
+2266,645 : 2531,839 :  green :  three  : wave    :  hollow
+
+26,848   : 294,1042  :  green :  one    : diamond :  stripes
+306,848  : 574,1042  :  green :  two    : diamond :  stripes
+586,848  : 854,1042  :  green :  three  : diamond :  stripes
+866,848  : 1134,1042 :  green :  one    : ellipse :  stripes
+1146,848 : 1414,1042 :  green :  two    : ellipse :  stripes
+1426,848 : 1694,1042 :  green :  three  : ellipse :  stripes
+1706,848 : 1974,1042 :  green :  one    : wave    :  stripes
+1986,848 : 2254,1042 :  green :  two    : wave    :  stripes
+2266,848 : 2531,1042 :  green :  three  : wave    :  stripes
+
+26,1051   : 294,1245  :  green :  one    : diamond :  solid
+306,1051  : 574,1245  :  green :  two    : diamond :  solid
+586,1051  : 854,1245  :  green :  three  : diamond :  solid
+866,1051  : 1134,1245 :  green :  one    : ellipse :  solid
+1146,1051 : 1414,1245 :  green :  two    : ellipse :  solid
+1426,1051 : 1694,1245 :  green :  three  : ellipse :  solid
+1706,1051 : 1974,1245 :  green :  one    : wave    :  solid
+1986,1051 : 2254,1245 :  green :  two    : wave    :  solid
+2266,1051 : 2531,1245 :  green :  three  : wave    :  solid
+
+26,1254   : 294,1457  :  purple :  one    : diamond :  hollow
+306,1254  : 574,1457  :  purple :  two    : diamond :  hollow
+586,1254  : 854,1457  :  purple :  three  : diamond :  hollow
+866,1254  : 1134,1457 :  purple :  one    : ellipse :  hollow
+1146,1254 : 1414,1457 :  purple :  two    : ellipse :  hollow
+1426,1254 : 1694,1457 :  purple :  three  : ellipse :  hollow
+1706,1254 : 1974,1457 :  purple :  one    : wave    :  hollow
+1986,1254 : 2254,1457 :  purple :  two    : wave    :  hollow
+2266,1254 : 2531,1457 :  purple :  three  : wave    :  hollow
+
+26,1464   : 294,1660  :  purple :  one    : diamond :  stripes
+306,1464  : 574,1660  :  purple :  two    : diamond :  stripes
+586,1464  : 854,1660  :  purple :  three  : diamond :  stripes
+866,1464  : 1134,1660 :  purple :  one    : ellipse :  stripes
+1146,1464 : 1414,1660 :  purple :  two    : ellipse :  stripes
+1426,1464 : 1694,1660 :  purple :  three  : ellipse :  stripes
+1706,1464 : 1974,1660 :  purple :  one    : wave    :  stripes
+1986,1464 : 2254,1660 :  purple :  two    : wave    :  stripes
+2266,1464 : 2531,1660 :  purple :  three  : wave    :  stripes
+
+26,1667   : 294,1863  :  purple :  one    : diamond :  solid
+306,1667  : 574,1863  :  purple :  two    : diamond :  solid
+586,1667  : 854,1863  :  purple :  three  : diamond :  solid
+866,1667  : 1134,1863 :  purple :  one    : ellipse :  solid
+1146,1667 : 1414,1863 :  purple :  two    : ellipse :  solid
+1426,1667 : 1694,1863 :  purple :  three  : ellipse :  solid
+1706,1667 : 1974,1863 :  purple :  one    : wave    :  solid
+1986,1667 : 2254,1863 :  purple :  two    : wave    :  solid
+2266,1667 : 2531,1863 :  purple :  three  : wave    :  solid
