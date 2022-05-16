@@ -14,6 +14,7 @@ public class Mouse
 
     public void init(Window window)
     {
+        window.setGlContext();
         this.window = window;
         GLFW.glfwSetCursorPosCallback(window.getWindowId(), (w, x, y) ->
         {

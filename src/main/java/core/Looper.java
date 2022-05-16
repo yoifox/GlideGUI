@@ -27,6 +27,8 @@ public class Looper
         physicsThreadTaskQueue.add(r);
     }
 
+    public static long currentContext = 0;
+
     public static void start()
     {
         errorCallback = GLFWErrorCallback.createPrint(System.err).set();
@@ -85,10 +87,13 @@ public class Looper
                 }
 
                 //closing windows
+                boolean changeContext = false;
                 for(Window window : toClose)
                 {
                     window.getContext().cleanup();
                     windows.remove(window);
+                    if(currentContext == window.windowId)
+                        changeContext = true;
                     if(windows.isEmpty())
                     {
                         cleanup();
@@ -96,12 +101,13 @@ public class Looper
                     }
                 }
                 toClose.clear();
+                windows.get(0).setGlContext();
             }
             if(render)
             {
                 for(Window window : windows)
                 {
-                    GLFW.glfwMakeContextCurrent(window.getWindowId());
+                    window.setGlContext();
                     update(window, 1f / fps);
                     frames++;
                 }

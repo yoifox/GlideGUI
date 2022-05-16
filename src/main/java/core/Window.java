@@ -89,6 +89,7 @@ public class Window
         GLFW.glfwSetWindowPos(windowId, (vidMode.width() - width) / 2,
                 (vidMode.height() - height) / 2);
         GLFW.glfwMakeContextCurrent(windowId);
+        Looper.currentContext = windowId;
         GLFW.glfwSwapInterval(1); //vSync
         GLFW.glfwShowWindow(windowId);
         GL.createCapabilities();
@@ -110,7 +111,7 @@ public class Window
 
     protected void update()
     {
-        GLFW.glfwMakeContextCurrent(windowId);
+        setGlContext();
         ALC10.alcMakeContextCurrent(audioContext);
         GLFW.glfwSwapBuffers(windowId);
         GLFW.glfwPollEvents();
@@ -123,6 +124,11 @@ public class Window
         GLFW.glfwSetWindowTitle(windowId, title);
     }
 
+    public static final int UNLIMITED_SIZE = -1;
+    public void setSizeLimits(int minWidth, int minHeight, int maxWidth, int maxHeight)
+    {
+        GLFW.glfwSetWindowSizeLimits(windowId, minWidth, minHeight, maxWidth, maxHeight);
+    }
     public void setVerticalSync(boolean enable)
     {
         GLFW.glfwMakeContextCurrent(windowId);
@@ -196,6 +202,15 @@ public class Window
     }
 
     //
+
+    public void setGlContext()
+    {
+        if(Looper.currentContext != windowId)
+        {
+            Looper.currentContext = windowId;
+            GLFW.glfwMakeContextCurrent(windowId);
+        }
+    }
 
     public void close()
     {

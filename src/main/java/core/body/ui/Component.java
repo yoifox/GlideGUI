@@ -1,5 +1,6 @@
 package core.body.ui;
 
+import core.body.Texture;
 import org.joml.Vector2f;
 import core.body.Body2d;
 import core.body.ColorValue;
@@ -95,11 +96,12 @@ public class Component extends Body2d
     public Component gradComp;
     public ColorValue gradCompColor;
     public boolean isGradComp = false;
-    public void shadow(int px, float x, float y)
+    public Component shadow(int px, float x, float y)
     {
         shadow(px, x, y, ColorValue.COLOR_BLACK);
+        return this;
     }
-    public void shadow(int px, float x, float y, ColorValue color)
+    public Component shadow(int px, float x, float y, ColorValue color)
     {
         Runnable doRun = new Runnable() {
             @Override
@@ -133,12 +135,14 @@ public class Component extends Body2d
         {
             doRun.run();
         }
+        return this;
     }
-    public void boxShadow(int px, float x, float y)
+    public Component boxShadow(int px, float x, float y)
     {
         boxShadow(px, x, y, ColorValue.COLOR_BLACK);
+        return this;
     }
-    public void boxShadow(int px, float x, float y, ColorValue color)
+    public Component boxShadow(int px, float x, float y, ColorValue color)
     {
         Runnable doRun = new Runnable() {
             @Override
@@ -168,9 +172,10 @@ public class Component extends Body2d
             doOnCreate(doRun);
         else
             doRun.run();
+        return this;
     }
 
-    public void positionEachFrame(float x, float y)
+    public Component positionEachFrame(float x, float y)
     {
         doEveryFrame(new Runnable() {
             @Override
@@ -182,15 +187,59 @@ public class Component extends Body2d
                 origin = ORIGIN_CENTER;
             }
         });
+        return this;
     }
 
-    public void center()
+    public Component center()
     {
         x = 0.5f;
         y = 0.5f;
         isXPercentage = true;
         isYPercentage = true;
         origin = ORIGIN_CENTER;
+        return this;
+    }
+
+    public Component fill()
+    {
+        x = 1;
+        y = 1;
+        isXPercentage = true;
+        isYPercentage = true;
+        origin = ORIGIN_TOP_LEFT;
+        return this;
+    }
+
+    public Component setRoundness(float topLeft, float topRight, float bottomLeft, float bottomRight)
+    {
+        bc.roundness = new float[] {topLeft, topRight, bottomLeft, bottomRight};
+        return this;
+    }
+
+    public Component setOrigin(int origin)
+    {
+        this.origin = origin;
+        return this;
+    }
+
+    public Component setBorder(float width, ColorValue color)
+    {
+        bc.borderWidth = width;
+        bc.borderColor = color;
+        return this;
+    }
+
+    public Component setBackground(ColorValue color)
+    {
+        if(bc.texture != null) bc.texture = null;
+        bc.color = color;
+        return this;
+    }
+
+    public Component setBackground(Texture texture)
+    {
+        bc.texture = texture;
+        return this;
     }
 
     //Returns width in pixels

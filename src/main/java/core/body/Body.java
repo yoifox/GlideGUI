@@ -131,23 +131,26 @@ public class Body
         return null;
     }
 
-    public void addChild(Body body)
+    public Body addChild(Body body)
     {
         children.put(body.id, body);
         body.parent = this;
+        return this;
     }
 
-    public void removeChild(Body body)
+    public Body removeChild(Body body)
     {
         children.remove(body.id);
         body.onDestroy();
         body.parent = null;
+        return this;
     }
 
-    public void removeChild(String id)
+    public Body removeChild(String id)
     {
         children.remove(id);
         children.get(id).onDestroy();
         children.get(id).parent = null;
+        return this;
     }
 }
