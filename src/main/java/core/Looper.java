@@ -108,7 +108,7 @@ public class Looper
                 for(Window window : windows)
                 {
                     window.setGlContext();
-                    update(window, 1f / fps);
+                    update(window, (1f / fps) * windows.size());
                     frames++;
                 }
             }
