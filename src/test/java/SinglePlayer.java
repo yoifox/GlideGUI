@@ -41,7 +41,6 @@ public class SinglePlayer extends Scene
         initTopText();
 
         bc = new Component(0.9f, 0.9f, new Color(new ColorValue(1, 1, 1, 0.85f), 0, null, new float[] {32, 32, 32, 32}));
-        //bc.bc.isRoundnessPercentage = new boolean[] {true, true, true, true};
         bc.boxShadow(48, 0, 0);
         bc.center(); bc.isWidthPercentage = true; bc.isHeightPercentage = true;
         addBody(bc);
@@ -171,7 +170,7 @@ public class SinglePlayer extends Scene
 
         Button button = new Button(80, 48, new Color(new ColorValue(1, 1, 1, 1), 0, null, new float[] {32, 32, 32, 32}));
         button.center(); button.y = 0.7f;
-        button.shadow(32, 0.5f, 0.5f, new ColorValue(1, 1, 1, 0.35f));
+        button.boxShadow(32, 0, 0, new ColorValue(1, 1, 1, 0.35f));
         component.addChild(button);
         Text p = new Text("Restart", 19, fontArial);
         p.center(); p.y = 0.53f;
