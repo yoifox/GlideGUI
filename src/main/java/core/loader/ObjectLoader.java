@@ -42,6 +42,7 @@ public class ObjectLoader
         this.context = context;
     }
 
+    @Deprecated
     public Mesh loadObject(String src)
     {
         String ext = src.substring(src.lastIndexOf(".")).replaceFirst("\\.", "");
@@ -52,6 +53,16 @@ public class ObjectLoader
         if(ext.equals("obj")) return OBJLoader.loadModel(src, this);
         if(ext.equals("fbx")) return FBXLoader.loadModel(src, this);
         throw new UnsupportedFileFormatException(src);
+    }
+
+    public Mesh loadMesh(String src)
+    {
+        return ModelLoader.load(src, this);
+    }
+
+    public Mesh loadMesh(Class<?> cls, String res)
+    {
+        return ModelLoader.load(cls, res, this);
     }
 
     public Mesh loadObject(float[] vertices, float[] textureCoordinates, float[] normals, int[] indices, float[] tangents, BoundingBox box)
@@ -250,6 +261,44 @@ public class ObjectLoader
 
         LibCStdlib.free(decodedAudioBuffer);
         return new Sound(bufferId, sourceId);
+    }
+
+    public ByteBuffer loadTextureBuffer(String src, int[] w, int[] h, int[] c)
+    {
+        ByteBuffer buffer;
+        try(MemoryStack stack = stackPush())
+        {
+            IntBuffer width = stack.mallocInt(1);
+            IntBuffer height = stack.mallocInt(1);
+            IntBuffer channels = stack.mallocInt(1);
+
+            buffer = STBImage.stbi_load(src, width, height, channels, 4);
+            if(buffer == null)
+                throw new RuntimeException(STBImage.stbi_failure_reason());
+            w[0] = width.get();
+            h[0] = height.get();
+            c[0] = channels.get();
+        }
+        return buffer;
+    }
+
+    public ByteBuffer loadTextureBuffer(Class<?> cls, String res, int[] w, int[] h, int[] c)
+    {
+        ByteBuffer buffer;
+        try(MemoryStack stack = stackPush())
+        {
+            IntBuffer width = stack.mallocInt(1);
+            IntBuffer height = stack.mallocInt(1);
+            IntBuffer channels = stack.mallocInt(1);
+
+            buffer = STBImage.stbi_load_from_memory(Utils.loadResourceBuffer(cls, res), w, h, c, 4);
+            if(buffer == null)
+                throw new RuntimeException(STBImage.stbi_failure_reason());
+            w[0] = width.get();
+            h[0] = height.get();
+            c[0] = channels.get();
+        }
+        return buffer;
     }
 
     public Texture loadTexture(String src)

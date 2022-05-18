@@ -6,8 +6,10 @@ public class Main
 {
     public static void main(String[] args)
     {
-        Display.init();
-        Looper.addWindow(new Window(false, 1000, 1000, new MainMenu()));
-        Looper.start();
+        //Display.init();
+        //Looper.addWindow(new Window(false, 1000, 1000, new MainMenu()));
+        //Looper.start();
+
+        System.out.println(1 | 2 | 3 | 4);
     }
 }

@@ -3,6 +3,7 @@ import core.body.*;
 import core.body.ui.*;
 import org.lwjgl.glfw.GLFW;
 
+import java.nio.ByteBuffer;
 import java.util.*;
 
 public class SinglePlayer extends Scene
@@ -76,6 +77,7 @@ public class SinglePlayer extends Scene
     void start()
     {
         Collections.shuffle(deck);
+
         cards = objectLoader.loadTexture(getClass(), "/cards.png");
         cardsSelected = objectLoader.loadTexture(getClass(), "/cardsSelected.png");
 
