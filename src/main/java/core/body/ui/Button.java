@@ -1,5 +1,6 @@
 package core.body.ui;
 
+import core.body.ColorValue;
 import core.utils.MathUtils;
 
 public class Button extends Component
@@ -29,6 +30,33 @@ public class Button extends Component
     public boolean isHovering()
     {
         return isHovering;
+    }
+
+    public Button onHover(ColorValue color)
+    {
+        Runnable r = new Runnable() {
+            @Override
+            public void run() {
+                onHoverListener = new OnHoverListener() {
+                    ColorValue normal = bc.color;
+                    @Override
+                    public void onEnter(Button button) {
+                        bc.color = color;
+                    }
+
+                    @Override
+                    public void onLeave(Button button) {
+                        bc.color = normal;
+                    }
+                };
+            }
+        };
+
+        if(isCreated() || bc != null)
+            r.run();
+        else
+            doOnCreate(r);
+        return this;
     }
 
     @Override

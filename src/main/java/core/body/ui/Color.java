@@ -16,6 +16,9 @@ public class Color
 
     public Texture texture;
     public ColorValue color = new ColorValue(0, 0, 0, 0);
+    public ColorValue addColor = new ColorValue(0, 0, 0, 0);
+    public ColorValue addColorTransparent = new ColorValue(0, 0, 0, 0);
+    public ColorValue mulColor = new ColorValue(1, 1, 1, 1);
     public float borderWidth = 0;
     public ColorValue borderColor = ColorValue.COLOR_TRANSPARENT;
     public float[] roundness = new float[] {0, 0, 0, 0}; //only percentage
