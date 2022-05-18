@@ -7,6 +7,9 @@ struct Color
     vec4 borderColor;
     float borderWidth;
     vec4 roundness;
+    vec4 addColor;
+    vec4 mulColor;
+    vec4 addColorTransparent;
 };
 
 struct Text
@@ -80,6 +83,14 @@ void main()
     }
     else
         fragOutColor = getColor();
+
+    fragOutColor += color.addColorTransparent;
+
+    if(fragOutColor.w != 0)
+    {
+        fragOutColor += color.addColor;
+        fragOutColor *= color.mulColor;
+    }
 }
 
 bool debug1 = false;

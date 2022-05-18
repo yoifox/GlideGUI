@@ -22,6 +22,7 @@ public class Keyboard
     public void init(Window window)
     {
         this.window = window;
+        window.setGlContext();
 
         GLFW.glfwSetKeyCallback(window.getWindowId(), new GLFWKeyCallback()
         {

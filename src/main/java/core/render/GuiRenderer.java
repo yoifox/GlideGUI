@@ -166,11 +166,9 @@ public class GuiRenderer
         shader.createUniform("color.borderColor");
         shader.createUniform("color.borderWidth");
         shader.createUniform("color.roundness");
-        //shader.createUniform("color.shadowWidth");
-        //shader.createUniform("color.shadowColorLeft");
-        //shader.createUniform("color.shadowColorTop");
-        //shader.createUniform("color.shadowColorRight");
-        //shader.createUniform("color.shadowColorBottom");
+        shader.createUniform("color.addColor");
+        shader.createUniform("color.mulColor");
+        shader.createUniform("color.addColorTransparent");
     }
 
     public static void setColorUniform(Shader shader, Component component)
@@ -183,11 +181,9 @@ public class GuiRenderer
         float[] roundnessPx = component.getRoundness();
         float max = Math.max(component.getWidth(), component.getHeight());
         shader.setUniform("color.roundness", new Vector4f(roundnessPx[0] / max, roundnessPx[1] / max, roundnessPx[2] / max, roundnessPx[3] / max));
-        //shader.setUniform("color.shadowWidth", new Vector4f(component.bc.shadowWidth[0], component.bc.shadowWidth[1], component.bc.shadowWidth[2], component.bc.shadowWidth[3]));
-        //shader.setUniform("color.shadowColorLeft", component.bc.shadowColorLeft.vec4());
-        //shader.setUniform("color.shadowColorTop", component.bc.shadowColorTop.vec4());
-        //shader.setUniform("color.shadowColorRight", component.bc.shadowColorRight.vec4());
-        //shader.setUniform("color.shadowColorBottom", component.bc.shadowColorBottom.vec4());
+        shader.setUniform("color.addColor", component.bc.addColor.vec4());
+        shader.setUniform("color.mulColor", component.bc.mulColor.vec4());
+        shader.setUniform("color.addColorTransparent", component.bc.addColorTransparent.vec4());
     }
 
     public static void createTextUniform(Shader shader)

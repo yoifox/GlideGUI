@@ -3,6 +3,7 @@ import core.body.*;
 import core.body.ui.*;
 import org.lwjgl.glfw.GLFW;
 
+import java.nio.ByteBuffer;
 import java.util.*;
 
 public class SinglePlayer extends Scene
@@ -34,14 +35,13 @@ public class SinglePlayer extends Scene
     public void onCreate()
     {
         super.onCreate();
-        GLFW.glfwSetWindowSizeLimits(window.getWindowId(), 750, 800, GLFW.GLFW_DONT_CARE, GLFW.GLFW_DONT_CARE);
+        window.setSizeLimits(750, 750, Window.UNLIMITED_SIZE, Window.UNLIMITED_SIZE);
 
         window.setTitle("Set");
 
         initTopText();
 
         bc = new Component(0.9f, 0.9f, new Color(new ColorValue(1, 1, 1, 0.85f), 0, null, new float[] {32, 32, 32, 32}));
-        //bc.bc.isRoundnessPercentage = new boolean[] {true, true, true, true};
         bc.boxShadow(48, 0, 0);
         bc.center(); bc.isWidthPercentage = true; bc.isHeightPercentage = true;
         addBody(bc);
@@ -77,6 +77,7 @@ public class SinglePlayer extends Scene
     void start()
     {
         Collections.shuffle(deck);
+
         cards = objectLoader.loadTexture(getClass(), "/cards.png");
         cardsSelected = objectLoader.loadTexture(getClass(), "/cardsSelected.png");
 
@@ -145,8 +146,8 @@ public class SinglePlayer extends Scene
                 {
                     if(cardComponent.scaleX > 0)
                     {
-                        cardComponent.scaleX -= 0.02f;
-                        cardComponent.scaleY -= 0.02f;
+                        cardComponent.scaleX -= 2f * delta;
+                        cardComponent.scaleY -= 2f * delta;
                     }
                 }
                 animTime += delta;
@@ -171,7 +172,7 @@ public class SinglePlayer extends Scene
 
         Button button = new Button(80, 48, new Color(new ColorValue(1, 1, 1, 1), 0, null, new float[] {32, 32, 32, 32}));
         button.center(); button.y = 0.7f;
-        button.shadow(32, 0.5f, 0.5f, new ColorValue(1, 1, 1, 0.35f));
+        button.boxShadow(32, 0, 0, new ColorValue(1, 1, 1, 0.35f));
         component.addChild(button);
         Text p = new Text("Restart", 19, fontArial);
         p.center(); p.y = 0.53f;
