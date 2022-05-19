@@ -26,15 +26,19 @@ public class Entity extends Body3d
     public void updatePhysics(float delta)
     {
         super.updatePhysics(delta);
-        mesh.boundingBox.x = mesh.boundingBox.x0 + x;
-        mesh.boundingBox.y = mesh.boundingBox.y0 + y;
-        mesh.boundingBox.z = mesh.boundingBox.z0 + z;
-        mesh.boundingBox.rotationX = rotationX;
-        mesh.boundingBox.rotationY = rotationY;
-        mesh.boundingBox.rotationZ = rotationZ;
-        mesh.boundingBox.scaleX = scaleX;
-        mesh.boundingBox.scaleY = scaleY;
-        mesh.boundingBox.scaleZ = scaleZ;
+    }
+
+    public BoundingBox getBoundingBox()
+    {
+        BoundingBox boundingBox = mesh.boundingBox;
+        BoundingBox result = new BoundingBox(0, 0, 0);
+        result.x = boundingBox.x0 + x;
+        result.y = boundingBox.y0 + y;
+        result.z = boundingBox.z0 + z;
+        result.width = boundingBox.width * scaleX;
+        result.height = boundingBox.height * scaleY;
+        result.depth = boundingBox.depth * scaleZ;
+        return result;
     }
 }
 

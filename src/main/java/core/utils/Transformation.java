@@ -1,5 +1,7 @@
 package core.utils;
 
+import core.input.Keyboard;
+import core.input.Mouse;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
@@ -10,6 +12,7 @@ import core.body.Camera;
 import core.body.ui.Component;
 import core.body.ui.Layout;
 import core.body.ui.TextCharacter;
+import org.lwjgl.glfw.GLFW;
 
 public class Transformation
 {
@@ -179,5 +182,45 @@ public class Transformation
                 .rotate((float) Math.toRadians(rotation.z), new Vector3f(0, 0, 1));
         matrix.translate(-position.x, -position.y, -position.z);
         return matrix;
+    }
+
+    public static void moveCamera(Mouse mouse, Keyboard keyboard, Camera camera, float speed)
+    {
+        if(mouse.isLeftButtonPressed())
+        {
+            camera.rotate((float) (mouse.getDx() * 0.2f), (float) (mouse.getDy() * 0.2f), 0);
+            if (camera.rotationX > 80)
+                camera.setRotation(80, camera.rotationY, camera.rotationZ);
+            if (camera.rotationX < -80)
+                camera.setRotation(-80, camera.rotationY, camera.rotationZ);
+        }
+        if(keyboard.isKeyPressed(GLFW.GLFW_KEY_W))
+        {
+            camera.move((float) (speed * Math.sin((float) Math.toRadians(camera.rotationY))), 0, 0);
+            camera.move(0f, 0f, (float) (-speed * Math.sin(Math.toRadians(90 - camera.rotationY))));
+        }
+        if(keyboard.isKeyPressed(GLFW.GLFW_KEY_S))
+        {
+            camera.move((float) (-speed * Math.sin((float) Math.toRadians(camera.rotationY))), 0, 0);
+            camera.move(0, 0, (float) (speed * Math.sin(Math.toRadians(90 - camera.rotationY))));
+        }
+        if(keyboard.isKeyPressed(GLFW.GLFW_KEY_A))
+        {
+            camera.move((float) (-speed * Math.sin((float) Math.toRadians(camera.rotationY + 90))), 0, 0);
+            camera.move(0, 0, (float) (-speed * Math.sin(Math.toRadians(90 - camera.rotationY + 90))));
+        }
+        if(keyboard.isKeyPressed(GLFW.GLFW_KEY_D))
+        {
+            camera.move((float) (speed * Math.sin((float) Math.toRadians(camera.rotationY + 90))), 0, 0);
+            camera.move( 0, 0, (float) (speed * Math.sin(Math.toRadians(90 - camera.rotationY + 90))));
+        }
+        if(keyboard.isKeyPressed(GLFW.GLFW_KEY_SPACE))
+        {
+            camera.move(0, speed, 0);
+        }
+        if(keyboard.isKeyPressed(GLFW.GLFW_KEY_LEFT_SHIFT))
+        {
+            camera.move(0, -speed, 0);
+        }
     }
 }
