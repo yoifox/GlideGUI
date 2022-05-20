@@ -42,19 +42,6 @@ public class ObjectLoader
         this.context = context;
     }
 
-    @Deprecated
-    public Mesh loadObject(String src)
-    {
-        String ext = src.substring(src.lastIndexOf(".")).replaceFirst("\\.", "");
-        if(Arrays.stream(Info.getSupportedMeshFormats()).noneMatch(ext::equals))
-        {
-            throw new RuntimeException(ext + " file format not supported for 3D model.");
-        }
-        if(ext.equals("obj")) return OBJLoader.loadModel(src, this);
-        if(ext.equals("fbx")) return FBXLoader.loadModel(src, this);
-        throw new UnsupportedFileFormatException(src);
-    }
-
     public Mesh loadMesh(String src)
     {
         return ModelLoader.load(src, this);
@@ -183,7 +170,6 @@ public class ObjectLoader
     {
         textures.remove(texture);
         GL30.glDeleteTextures(texture.getId());
-        LibCStdlib.free(texture.buffer);
     }
 
     public void free(Mesh mesh)

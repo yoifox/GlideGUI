@@ -34,4 +34,19 @@ public class BoundingBox extends Body3d
     {
         return new Vector3f((x + width) / 2, (y + height) / 2, (z + depth) / 2);
     }
+
+    public float[] getVertices()
+    {
+        return new float[] {
+                x, y, z,
+                x + width, y, z,
+                x, y, z + depth,
+                x + width, y, z + depth,
+
+                x, y + height, z,
+                x + width, y + height, z,
+                x, y + height, z + depth,
+                x + width, y + height, z + depth
+        };
+    }
 }

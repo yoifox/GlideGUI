@@ -63,6 +63,7 @@ public class MathUtils
 
     public static BoundingBox createBoundingBox(float[] vertices)
     {
+        /*
         float minX = 0, minY = 0, minZ = 0, maxX = 0, maxY = 0, maxZ = 0;
         float xSum = 0, ySum = 0, zSum = 0;
 
@@ -94,7 +95,40 @@ public class MathUtils
         float posY = ySum / (vertices.length / 3f) - height / 2f;
         float posZ = zSum / (vertices.length / 3f) - depth / 2f;
 
-        return new BoundingBox(posX, posY, posZ, 0, 0, 0, 1, 1, 1, width, height, depth);
+        return new BoundingBox(posX, posY, posZ, 0, 0, 0, 1, 1, 1, width, height, depth);*/
+        return createBoundingBox(vertices, new Matrix4f());
+    }
+
+    public static BoundingBox createBoundingBox(float[] vertices, Matrix4f transformation)
+    {
+        float xn = Float.MAX_VALUE;
+        float yn = xn;
+        float zn = xn;
+
+        float xf = Float.MIN_VALUE;
+        float yf = xf;
+        float zf = xf;
+
+        for(int index = 0; index < vertices.length; index += 3) {
+
+            Vector3f vertex = multiply(transformation, vertices[index], vertices[index + 1], vertices[index + 2]);
+
+            float x = vertex.x;
+            float y = vertex.y;
+            float z = vertex.z;
+
+            if(x < xn) xn = x; else if(x > xf) xf = x;
+            if(y < yn) yn = y; else if(y > yf) yf = y;
+            if(z < zn) zn = z; else if(z > zf) zf = z;
+        }
+
+        float width = xf - xn;
+        float height = yf - yn;
+        float depth = zf - zn;
+
+        BoundingBox boundingBox =  new BoundingBox(width, height, depth);
+        boundingBox.setPosition(xn, yn, zn);
+        return boundingBox;
     }
 
     public static Vector3f multiply(Matrix4f matrix, float x, float y, float z)
@@ -118,5 +152,26 @@ public class MathUtils
         float l2 = ((p3.z - p1.z) * (pos.x - p3.x) + (p1.x - p3.x) * (pos.y - p3.z)) / det;
         float l3 = 1.0f - l1 - l2;
         return l1 * p1.y + l2 * p2.y + l3 * p3.y;
+    }
+
+    public static Vector3f moveVertexAlongNormal(Vector3f vertex, Vector3f normal, float distance)
+    {
+        return new Vector3f(vertex).add(new Vector3f(normal).mul(distance));
+    }
+
+    public static Vector3f normal(Vector3f v1, Vector3f v2)
+    {
+        return new Vector3f(v2).sub(v1).normalize();
+    }
+
+    public static boolean pointInBox(BoundingBox box, Vector3f point)
+    {
+        float minHeight = box.y - box.height / 2, maxHeight = box.y + box.height / 2;
+        float minWidth = box.x - box.width / 2, maxWidth = box.x + box.width / 2;
+        float minDepth = box.z - box.depth / 2, maxDepth = box.z + box.depth / 2;
+        if(point.x <= minWidth || point.x >= maxWidth) return false;
+        if(point.y <= minHeight || point.y >= maxHeight) return false;
+        if(point.z <= minDepth || point.z >= maxDepth) return false;
+        return true;
     }
 }

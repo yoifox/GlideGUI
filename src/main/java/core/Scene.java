@@ -20,11 +20,13 @@ public class Scene implements Context
 
     public Mouse mouseInput = new Mouse();
     public Keyboard keyInput = new Keyboard();
-    private Map<String, Body> bodies = new HashMap<>();
-    private List<PointLight> pointLights = new ArrayList<>();
+    private final Map<String, Body> bodies = new HashMap<>();
+    private final List<PointLight> pointLights = new ArrayList<>();
     private List<PointLight> previousPointLights = new ArrayList<>();
-    private List<SpotLight> spotLights = new ArrayList<>();
+    private final List<SpotLight> spotLights = new ArrayList<>();
     private List<SpotLight> previousSpotLights = new ArrayList<>();
+    private final List<CollisionShape3d> collisionShape3ds = new ArrayList<>();
+    private List<CollisionShape3d> previousCollisionShape3ds = new ArrayList<>();
     public DirectionalLight directionalLight = new DirectionalLight();
     public Camera camera;
     public Window window;
@@ -36,18 +38,18 @@ public class Scene implements Context
     protected TerrainRenderer terrainRenderer;
     protected FXAARenderer fxaaRenderer;
     public boolean stopped = false;
-    private int fbo, rbo;
-    private Texture frame;
     public Texture grad, boxShadow;
 
     private final List<Runnable> treeModification = new ArrayList<>();
     private Runnable changeScene;
 
+    int fbo;
+    Texture frame;
+
     @Override
-    public void render(float delta)
+    public synchronized void render(float delta)
     {
         if(stopped) return;
-
         mouseInput.update();
         keyInput.update(delta);
         update(delta);
@@ -64,28 +66,37 @@ public class Scene implements Context
             updateTree(entry.getValue(), delta);
         }
 
+        renderGui();
+
         previousPointLights = new ArrayList<>(pointLights);
         previousSpotLights = new ArrayList<>(spotLights);
         pointLights.clear();
         spotLights.clear();
 
-        //postProcess(delta, frame, null);
-
-        //GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, 0);
-        //GL11.glEnable(GL11.GL_LINE_SMOOTH);
-        //GL11.glHint(GL11.GL_LINE_SMOOTH_HINT, GL11.GL_NICEST);
-        //fxaaRenderer.render(frame);
-        //objectLoader.free(frame);
-        //GL30.glDeleteFramebuffers(1);
-        //GL30.glDeleteRenderbuffers(1);
-
         if(changeScene != null)
             changeScene.run();
+    }
+
+    public void postProcessUi(float delta, Texture frame)
+    {
+
     }
 
     public void postProcess(float delta, Texture frame, Texture depth)
     {
 
+    }
+
+    private final List<Component> toRender = new ArrayList<>();
+    private void renderGui()
+    {
+        for(Component component : toRender) {
+            if(component instanceof TextCharacter textCharacter)
+                textRenderer.draw(textCharacter);
+            else
+                guiRenderer.render(component);
+        }
+        toRender.clear();
     }
 
     private boolean renderGradComp = false;
@@ -119,10 +130,6 @@ public class Scene implements Context
             entityRenderer.render(entity, camera, worldColor, previousPointLights, previousSpotLights, directionalLight, distanceFog);
             if(entity.mesh.boundingBox.visible)
             {
-                //Mesh mesh = entity.mesh.boundingBox.getModel(objectLoader);
-                //Material material = new Material(ColorValue.COLOR_RED, ColorValue.COLOR_BLACK, ColorValue.COLOR_WHITE);
-                //entityRenderer.render(new Entity(mesh, material), camera, worldColor, previousPointLights, previousSpotLights, directionalLight);
-                //objectLoader.free(mesh);
             }
         }
         else if(body instanceof Terrain terrain)
@@ -131,7 +138,8 @@ public class Scene implements Context
         }
         else if(body instanceof HorizontalList horizontalList)
         {
-            guiRenderer.render(horizontalList);
+            //guiRenderer.render(horizontalList);
+            toRender.add(horizontalList);
             for(Component component : horizontalList.components)
             {
                 updateTree(component, delta);
@@ -139,7 +147,8 @@ public class Scene implements Context
         }
         else if(body instanceof VerticalList verticalList)
         {
-            guiRenderer.render(verticalList);
+            //guiRenderer.render(verticalList);
+            toRender.add(verticalList);
             for(Component component : verticalList.components)
             {
                 updateTree(component, delta);
@@ -147,8 +156,8 @@ public class Scene implements Context
         }
         else if(body instanceof Text text)
         {
-            guiRenderer.render(text);
-
+            //guiRenderer.render(text);
+            toRender.add(text);
             for(Map.Entry<String, Body> entry1 : text.children.entrySet())
             {
                 if(entry1.getValue() instanceof TextCharacter textCharacter)
@@ -161,14 +170,16 @@ public class Scene implements Context
             {
                 if(entry1.getValue() instanceof TextCharacter textCharacter)
                 {
-                    textRenderer.draw(textCharacter);
+                    //textRenderer.draw(textCharacter);
+                    toRender.add(textCharacter);
                 }
             }
         }
         else if(body instanceof TextCharacter textCharacter) {}
         else if(body instanceof Component component)
         {
-            guiRenderer.render(component);
+            //guiRenderer.render(component);
+            toRender.add(component);
         }
         else if(body instanceof PointLight pointLight)
         {
@@ -184,21 +195,28 @@ public class Scene implements Context
         }
     }
 
-    private void updateTreePhysics(PhysicsBody3d body, float delta)
+    private void updateTreePhysics(Body body, float delta)
     {
+        if(body instanceof CollisionShape3d collisionShape3d)
+        {
+            collisionShape3ds.add(collisionShape3d);
+        }
+        for(Map.Entry<String, Body> entry : body.children.entrySet())
+        {
+            updateTreePhysics(entry.getValue(), delta);
+        }
         body.updatePhysics(delta);
     }
 
-    public void updatePhysics(float delta)
+    public synchronized void updatePhysics(float delta)
     {
         for(Map.Entry<String, Body> entry : bodies.entrySet())
         {
             if(stopped) return;
-            if(entry.getValue() instanceof PhysicsBody3d physicsBody3d)
-            {
-                updateTreePhysics(physicsBody3d, delta);
-            }
+            updateTreePhysics(entry.getValue(), delta);
         }
+        previousCollisionShape3ds = new ArrayList<>(collisionShape3ds);
+        collisionShape3ds.clear();
     }
 
     public void update(float delta) {}
@@ -226,18 +244,20 @@ public class Scene implements Context
         textRenderer.init(this);
         terrainRenderer.init(this);
         fxaaRenderer.init();
-
-        fbo = GL30.glGenFramebuffers();
-        rbo = GL30.glGenRenderbuffers();
-        frame = objectLoader.loadTexture(window.getWidth(), window.getHeight());
-
         fontArial = objectLoader.loadFont(getClass(), "/fonts/arial.ttf");
         fontOpenSans = objectLoader.loadFont(getClass(), "/fonts/openSans.ttf");
         fontRoboto = objectLoader.loadFont(getClass(), "/fonts/roboto.ttf");
         grad = objectLoader.loadTexture(getClass(), "/img/gradV2.png");
         boxShadow = objectLoader.loadTexture(getClass(), "/img/boxShadowV2.png");
+        initFbo();
 
         onCreate();
+    }
+
+    private void initFbo()
+    {
+        fbo = GL30.glGenFramebuffers();
+        frame = objectLoader.loadTexture(window.getWidth(), window.getHeight());
     }
 
     @Override
@@ -253,7 +273,6 @@ public class Scene implements Context
         bodies.clear();
         objectLoader.cleanup();
         GL30.glDeleteFramebuffers(fbo);
-        GL30.glDeleteRenderbuffers(rbo);
     }
 
     public void changeScene(Scene scene)
@@ -262,6 +281,7 @@ public class Scene implements Context
             @Override
             public void run() {
                 cleanup();
+                mouseInput.setMousePosition(window.getWidth() + 1, 0);
                 window.setContext(scene);
             }
         };
@@ -370,6 +390,10 @@ public class Scene implements Context
             if(i == index)
                 return entry.getValue();
         return null;
+    }
+
+    public List<CollisionShape3d> getCollisionShape3ds() {
+        return previousCollisionShape3ds;
     }
 
     public Map<String, Body> getBodies() {

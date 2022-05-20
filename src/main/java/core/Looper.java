@@ -7,6 +7,7 @@ import core.utils.Const;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class Looper
@@ -46,7 +47,7 @@ public class Looper
         run();
     }
 
-    private static void run()
+    private synchronized static void run()
     {
         isRunning = true;
         int frames = 0;
@@ -177,8 +178,11 @@ public class Looper
             {
                 long t0 = System.nanoTime();
 
-                for(Window window : windows)
-                    window.context.updatePhysics((float) delta / (float)Const.NS);
+                synchronized (windows)
+                {
+                    for(Window window : windows)
+                        window.context.updatePhysics((float) delta / (float)Const.NS);
+                }
 
                 while(!physicsThreadTaskQueue.isEmpty())
                 {
@@ -196,6 +200,6 @@ public class Looper
                 delta = (t1 - t0);
             }
         });
-        //physics.start();
+        physics.start();
     }
 }
