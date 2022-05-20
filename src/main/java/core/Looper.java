@@ -30,7 +30,7 @@ public class Looper
 
     public static long currentContext = 0;
 
-    public static void start()
+    public static void start(boolean withPhysics)
     {
         errorCallback = GLFWErrorCallback.createPrint(System.err).set();
         GLFW.glfwSetErrorCallback(errorCallback);
@@ -43,8 +43,14 @@ public class Looper
 
         if(isRunning)
             return;
-        startPhysics();
+        if(withPhysics)
+            startPhysics();
         run();
+    }
+
+    public static void start()
+    {
+        start(true);
     }
 
     private synchronized static void run()
