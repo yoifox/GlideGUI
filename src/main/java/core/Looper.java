@@ -159,7 +159,6 @@ public class Looper
             errorCallback.free();
             GLFW.glfwTerminate();
         }
-        physics.interrupt();
     }
 
     public static void addWindow(Window window)
