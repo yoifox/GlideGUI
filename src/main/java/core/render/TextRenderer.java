@@ -150,6 +150,7 @@ public class TextRenderer
         GL30.glBindVertexArray(quad.getVao());
         GL20.glEnableVertexAttribArray(0);
         GL20.glEnableVertexAttribArray(1);
+        GL20.glEnableVertexAttribArray(2);
 
         if(textCharacter.bc.texture != null)
         {
@@ -170,6 +171,7 @@ public class TextRenderer
 
         GL20.glDisableVertexAttribArray(0);
         GL20.glDisableVertexAttribArray(1);
+        GL20.glDisableVertexAttribArray(2);
         GL30.glBindVertexArray(0);
 
         shader.unbind();
@@ -179,6 +181,7 @@ public class TextRenderer
             GL13.glActiveTexture(0);
             GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
         }
+
     }
 
     private static Texture loadTexture(ByteBuffer buffer, int width, int height)
@@ -227,7 +230,7 @@ public class TextRenderer
         shader.cleanup();
     }
 
-    private class TextureInfo
+    private static class TextureInfo
     {
         public Texture texture;
         public int width;

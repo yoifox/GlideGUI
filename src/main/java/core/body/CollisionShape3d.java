@@ -12,7 +12,6 @@ public class CollisionShape3d extends PhysicsBody3d
     boolean boxCollision = true;
     boolean singleVertex = false;
     float singleVertexRadius = 0;
-    Vector3f singleVertexPoint;
     public List<String> masks = new ArrayList<>();
     public CollisionShapeListener collisionShapeListener;
 
@@ -28,18 +27,12 @@ public class CollisionShape3d extends PhysicsBody3d
         boundingBox = collisionMesh.boundingBox;
     }
 
-    public CollisionShape3d(Vector3f singleVertexPoint, float singleVertexRadius)
+    public CollisionShape3d(float singleVertexRadius)
     {
-        this.singleVertexPoint = singleVertexPoint;
         this.singleVertexRadius = singleVertexRadius;
         boxCollision = false;
         singleVertex = true;
         boundingBox = null;
-    }
-
-    public Vector3f getSingleVertex()
-    {
-        return singleVertexPoint;
     }
 
     public float getSingleVertexRadius() {
@@ -50,9 +43,9 @@ public class CollisionShape3d extends PhysicsBody3d
     {
         BoundingBox boundingBox = this.boundingBox;
         BoundingBox result = new BoundingBox(0, 0, 0);
-        result.x = boundingBox.x0 + x;
-        result.y = boundingBox.y0 + y;
-        result.z = boundingBox.z0 + z;
+        result.x = boundingBox.x + x;
+        result.y = boundingBox.y + y + boundingBox.height / 2f;
+        result.z = boundingBox.z + z;
         result.width = boundingBox.width * scaleX;
         result.height = boundingBox.height * scaleY;
         result.depth = boundingBox.depth * scaleZ;

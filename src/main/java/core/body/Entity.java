@@ -1,5 +1,9 @@
 package core.body;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class Entity extends Body3d
 {
     public Mesh mesh;
@@ -32,13 +36,21 @@ public class Entity extends Body3d
     {
         BoundingBox boundingBox = mesh.boundingBox;
         BoundingBox result = new BoundingBox(0, 0, 0);
-        result.x = boundingBox.x0 + x;
-        result.y = boundingBox.y0 + y;
-        result.z = boundingBox.z0 + z;
+        result.x = boundingBox.x + x;
+        result.y = boundingBox.y + y;
+        result.z = boundingBox.z + z;
         result.width = boundingBox.width * scaleX;
         result.height = boundingBox.height * scaleY;
         result.depth = boundingBox.depth * scaleZ;
         return result;
+    }
+
+    public CollisionShape3d addBoxCollision(String... masks)
+    {
+        CollisionShape3d collisionShape3d = new CollisionShape3d(getBoundingBox());
+        collisionShape3d.masks = Arrays.asList(masks);
+        addChild(collisionShape3d);
+        return collisionShape3d;
     }
 }
 

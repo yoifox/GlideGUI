@@ -1,72 +1,62 @@
 package test3d;
 
-import core.Looper;
 import core.Scene;
-import core.Window;
 import core.body.*;
-import core.body.light.DirectionalLight;
-import core.body.ui.Button;
-import core.body.ui.Text;
+import core.tools.RayCast;
 import core.utils.Transformation;
 import org.joml.Vector3f;
 
 public class Test3d extends Scene
 {
-    RigidBody3d body;
+    RayCast rayCast;
+    RigidBody3d ray;
+    Entity cube1;
     @Override
     public void onCreate() {
         super.onCreate();
-        Mesh cylinder = objectLoader.loadMesh(getClass(), "/shapes/cylinder.fbx");
-        Entity cylinderEntity = new Entity(cylinder, new Material(ColorValue.COLOR_GREEN, null, null));
-        addBody(cylinderEntity);
-        Mesh cone = objectLoader.loadMesh(getClass(), "/shapes/cone.fbx");
-        Entity coneEntity = new Entity(cone, new Material(ColorValue.COLOR_GREEN, null, null));
-        coneEntity.y = cylinderEntity.getBoundingBox().height;
-        addBody(coneEntity);
-
-        CollisionShape3d collisionShape3d = new CollisionShape3d(cylinder, true);
-        collisionShape3d.addToParent(cylinderEntity);
-        collisionShape3d.masks.add("a");
-
-        CollisionShape3d cameraCollision = new CollisionShape3d(new Vector3f(camera.x, camera.y, camera.z), 0);
-        cameraCollision.masks.add("a");
-        body = new RigidBody3d(cameraCollision);
-        addBody(body);
-
-        cameraCollision.collisionShapeListener = new CollisionShape3d.CollisionShapeListener() {
+        Mesh cubeMesh = objectLoader.loadMesh(getClass(), "/shapes/cube.fbx");
+        Entity cube = new Entity(cubeMesh, new Material(ColorValue.COLOR_GREEN, null, null));
+        cube.y = 40;
+        cube.addBoxCollision("test");
+        rayCast = new RayCast(camera);
+        CollisionShape3d collisionShape3d = new CollisionShape3d(0);
+        collisionShape3d.masks.add("test");
+        ray = new RigidBody3d(collisionShape3d);
+        collisionShape3d.collisionShapeListener = new CollisionShape3d.CollisionShapeListener() {
             @Override
             public void onCollisionEnter(CollisionShape3d shape, Vector3f normal) {
-                System.out.println(normal);
+                System.out.println("hi");
             }
 
             @Override
             public void onCollisionLeave(CollisionShape3d shape) {
-                System.out.println("Leave");
+                System.out.println("bye");
             }
         };
 
-        directionalLight = new DirectionalLight(20, 20, 20, 1, ColorValue.COLOR_WHITE);
-        setWorldColor(0.3f, 0.3f, 0.3f, 1);
+        cube1 = new Entity(cubeMesh, new Material(ColorValue.COLOR_GREEN, null, null));
+        cube1.setScale(0.1f, 0.1f, 0.1f);
 
-        Button button = ((Button) new Button(200, 200)
-                .setBackground(new ColorValue(0.8f, 0.8f, 0.8f, 1))
-                .setBorder(2, new ColorValue(0.5f, 0.5f, 0.5f, 1))
-                .center()
-                .addChild(new Text("Button", 42, fontRoboto).center()))
-                .onHover(new ColorValue(0.5f, 0.5f, 0.5f, 1));
-        button.onClickListener = new Button.OnClickListener() {
-            @Override
-            public void onClick(Button button) {
-                Looper.addWindow(new Window(false, 1000, 1000, new Test3d()));
-            }
-        };
-        addBody(button);
+        addBody(ray);
+        addBody(rayCast);
+        addBody(cube);
+        addBody(cube1);
     }
 
     @Override
     public void update(float delta) {
         super.update(delta);
         Transformation.moveCamera(mouseInput, keyInput, camera, 0.1f);
-        body.setPosition(camera.x, camera.y, camera.z);
+        ray.setPosition(camera.x, camera.y, camera.z);
+    }
+
+    @Override
+    public synchronized void updatePhysics(float delta) {
+        super.updatePhysics(delta);
+        Vector3f normal = rayCast.getRay(this, (float) mouseInput.getX(), (float) mouseInput.getY());
+        normal.normalize();
+        //System.out.println(ray.x + "," + ray.y + "," + ray.z);
+        ray.move(normal.x / 100f, normal.y / 100f, normal.z / 100f);
+        cube1.setPosition(ray.x, ray.y, ray.z);
     }
 }

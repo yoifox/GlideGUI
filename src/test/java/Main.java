@@ -8,6 +8,6 @@ public class Main
     {
         Display.init();
         Looper.addWindow(new Window(false, 1000, 1000, new MainMenu()));
-        Looper.start();
+        Looper.start(false);
     }
 }

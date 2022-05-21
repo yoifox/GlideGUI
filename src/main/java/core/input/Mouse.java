@@ -7,7 +7,7 @@ public class Mouse
     private Window window;
     private double dx, dy;
     private double x, y, scroll;
-    private boolean inWindow, leftButtonPressed, rightButtonPressed, leftButtonJustPressed, rightButtonJustPressed;
+    private boolean inWindow = true, leftButtonPressed, rightButtonPressed, leftButtonJustPressed, rightButtonJustPressed;
 
     private double previousX, previousY, previousScroll;
     private boolean previousInWindow, previousLeftButtonPressed, previousRightButtonPressed;

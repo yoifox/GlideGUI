@@ -20,6 +20,7 @@ public class RigidBody3d extends PhysicsBody3d
     public void updatePhysics(float delta)
     {
         super.updatePhysics(delta);
+        collisionShape.setPosition(x, y, z);
         detectCollision(scene.getCollisionShape3ds());
     }
 

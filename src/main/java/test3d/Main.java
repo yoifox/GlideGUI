@@ -9,6 +9,6 @@ public class Main
     public static void main(String[] args) {
         Display.init();
         Looper.addWindow(new Window(false, 1000, 1000, new Test3d()));
-        Looper.start();
+        Looper.start(true);
     }
 }

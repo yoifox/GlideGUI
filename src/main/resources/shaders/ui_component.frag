@@ -73,7 +73,7 @@ void main()
 
     if(text.isText == 1)
     {
-        vec4 characterPixel = texture(componentTexture, fragUv);
+        vec4 characterPixel = texture(componentTexture, fragImgUv);
         if(characterPixel.r > 0)
         {
             fragOutColor = characterPixel.r * text.textColor;
@@ -100,7 +100,7 @@ vec4 getColor()
     int state = isOutsideShape();
 
     vec4 colorValue = vec4(0);
-    if(color.hasTexture == 1) colorValue = texture(componentTexture, fragUv);
+    if(color.hasTexture == 1) colorValue = texture(componentTexture, fragImgUv);
     else colorValue = color.color;
 
     if(state == INSIDE_SHAPE)

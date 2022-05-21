@@ -53,7 +53,7 @@ public class Looper
         start(true);
     }
 
-    private synchronized static void run()
+    private static void run()
     {
         isRunning = true;
         int frames = 0;
@@ -94,21 +94,26 @@ public class Looper
                 }
 
                 //closing windows
-                boolean changeContext = false;
-                for(Window window : toClose)
+                synchronized (windows)
                 {
-                    window.getContext().cleanup();
-                    windows.remove(window);
-                    if(currentContext == window.windowId)
-                        changeContext = true;
-                    if(windows.isEmpty())
+                    boolean changeContext = false;
+                    for(Window window : toClose)
                     {
-                        cleanup();
-                        return;
+                        window.getContext().cleanup();
+                        boolean firstWindow = window == windows.get(0);
+                        windows.remove(window);
+                        if(currentContext == window.windowId)
+                            changeContext = true;
+                        if(windows.isEmpty() || firstWindow)
+                        {
+                            cleanup();
+                            return;
+                        }
                     }
+                    toClose.clear();
+                    if(changeContext)
+                        windows.get(0).setGlContext();
                 }
-                toClose.clear();
-                windows.get(0).setGlContext();
             }
             if(render)
             {
@@ -168,7 +173,9 @@ public class Looper
             public void run() {
                 window.init();
                 window.context.init(window);
-                windows.add(window);
+                synchronized (windows) {
+                    windows.add(window);
+                }
             }
         });
     }

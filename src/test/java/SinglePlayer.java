@@ -1,9 +1,6 @@
 import core.*;
 import core.body.*;
 import core.body.ui.*;
-import org.lwjgl.glfw.GLFW;
-
-import java.nio.ByteBuffer;
 import java.util.*;
 
 public class SinglePlayer extends Scene
@@ -17,7 +14,7 @@ public class SinglePlayer extends Scene
     Stack<Card> deck = new Stack<>();
 
     Texture cards;
-    Texture cardsSelected;
+    //Texture cardsSelected;
     Color cardsBc;
     Color cardsSelectedBc;
 
@@ -79,10 +76,11 @@ public class SinglePlayer extends Scene
         Collections.shuffle(deck);
 
         cards = objectLoader.loadTexture(getClass(), "/cards.png");
-        cardsSelected = objectLoader.loadTexture(getClass(), "/cardsSelected.png");
+        //cardsSelected = objectLoader.loadTexture(getClass(), "/cardsSelected.png");
 
         cardsBc = new Color(cards);
-        cardsSelectedBc = new Color(cardsSelected);
+        cardsSelectedBc = new Color(cards);
+        cardsSelectedBc.addColor = new ColorValue(-0.3f, -0.3f, -0.3f, 0);
 
         for(int i = 0; i < 12; i++)
         {
@@ -163,7 +161,7 @@ public class SinglePlayer extends Scene
 
         Component component = new Component(500, 270);
         component.bc = new Color(new ColorValue(1, 1, 1, 0.98f), 0, null, new float[] {48, 48, 48, 48});
-        component.shadow(250, 0.5f, 0.5f);
+        component.boxShadow(42, 0, 0);
         component.center();
 
         Text text = new Text("Game ended", 32, fontArial);

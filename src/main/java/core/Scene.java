@@ -50,6 +50,7 @@ public class Scene implements Context
     public synchronized void render(float delta)
     {
         if(stopped) return;
+        if(Float.isInfinite(delta)) delta = 0;
         mouseInput.update();
         keyInput.update(delta);
         update(delta);
@@ -210,6 +211,7 @@ public class Scene implements Context
 
     public synchronized void updatePhysics(float delta)
     {
+        if(Float.isInfinite(delta)) delta = 0;
         for(Map.Entry<String, Body> entry : bodies.entrySet())
         {
             if(stopped) return;
@@ -281,7 +283,6 @@ public class Scene implements Context
             @Override
             public void run() {
                 cleanup();
-                mouseInput.setMousePosition(window.getWidth() + 1, 0);
                 window.setContext(scene);
             }
         };

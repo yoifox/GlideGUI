@@ -10,7 +10,7 @@ public class HowToPlay extends Button
         height = 500;
         center();
         bc = Color.COLOR_WHITE;
-        shadow(1000, 0.5f, 0.5f);
+        boxShadow(1000, 0, 0);
 
         Component game1 = new Component(200, 155);
         game1.bc = new Color(scene.objectLoader.loadTexture(getClass(), "/game1.jpg"));

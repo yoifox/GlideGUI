@@ -106,7 +106,7 @@ public class ObjectLoader
         buffer = MemoryUtil.memAllocFloat(uvs.length);
         buffer.put(imgUvs).flip();
         GL15.glBufferData(GL15.GL_ARRAY_BUFFER, buffer, GL15.GL_STATIC_DRAW);
-        GL20.glVertexAttribPointer(1, 2, GL11.GL_FLOAT, false, 0, 0);
+        GL20.glVertexAttribPointer(2, 2, GL11.GL_FLOAT, false, 0, 0);
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
 
         GL30.glBindVertexArray(0);
