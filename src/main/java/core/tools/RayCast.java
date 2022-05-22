@@ -9,8 +9,9 @@ import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 
-public class RayCast extends Body
+public class RayCast
 {
+    private Scene scene;
     private Matrix4f projectionMatrix;
     private Matrix4f viewMatrix;
     private final Camera camera;

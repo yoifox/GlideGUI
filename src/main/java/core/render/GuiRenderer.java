@@ -1,5 +1,7 @@
 package core.render;
 
+import core.Looper;
+import core.body.AnimatedTexture;
 import org.joml.Vector2f;
 import org.joml.Vector4f;
 import org.lwjgl.opengl.GL11;
@@ -40,6 +42,7 @@ public class GuiRenderer
         createTextUniform(shader);
     }
 
+    float animTime = 0;
     public void render(Component component)
     {
         if(scene.stopped) return;
@@ -80,7 +83,23 @@ public class GuiRenderer
         if(component.bc.texture != null)
         {
             GL13.glActiveTexture(GL13.GL_TEXTURE0);
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D, component.bc.texture.getId());
+            if(component.bc.texture instanceof AnimatedTexture animatedTexture)
+            {
+                if(animatedTexture.position > animatedTexture.textures.length)
+                    animatedTexture.position = 0;
+                if(animatedTexture.position == 0)
+                    GL11.glBindTexture(GL11.GL_TEXTURE_2D, component.bc.texture.getId());
+                else
+                    GL11.glBindTexture(GL11.GL_TEXTURE_2D, animatedTexture.textures[animatedTexture.position - 1].getId());
+                animTime += Looper.getDelta();
+                if(animTime > animatedTexture.frameTime)
+                {
+                    animatedTexture.position++;
+                    animTime = 0;
+                }
+            }
+            else
+                GL11.glBindTexture(GL11.GL_TEXTURE_2D, component.bc.texture.getId());
         }
 
         GL11.glEnable(GL11.GL_BLEND);

@@ -2,9 +2,10 @@ package core.body;
 
 public class Mesh
 {
-    private int vao;
-    private int[] vbos;
-    private int vertexCount, indicesCount;
+    private final int vao;
+    private final int[] vbos;
+    private final int vertexCount;
+    private int indicesCount;
     public BoundingBox boundingBox;
     public boolean twoSided = false;
 

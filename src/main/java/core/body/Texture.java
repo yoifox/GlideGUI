@@ -90,4 +90,12 @@ public class Texture
     {
         return id;
     }
+
+    public int getChannels() {
+        return channels;
+    }
+
+    public int getType() {
+        return type;
+    }
 }

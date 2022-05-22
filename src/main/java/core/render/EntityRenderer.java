@@ -1,5 +1,7 @@
 package core.render;
 
+import core.Looper;
+import core.body.*;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
@@ -10,10 +12,6 @@ import org.lwjgl.opengl.GL30;
 import core.Scene;
 import core.Shader;
 import core.Window;
-import core.body.Camera;
-import core.body.DistanceFog;
-import core.body.Entity;
-import core.body.Material;
 import core.body.light.DirectionalLight;
 import core.body.light.PointLight;
 import core.body.light.SpotLight;
@@ -53,7 +51,7 @@ public class EntityRenderer
         if(!entity.visible) return;
 
         shader.bind();
-        shader.setUniform("projectionMatrix", window.projectionMatrix);
+        shader.setUniform("projectionMatrix", window.getProjectionMatrix());
         shader.setUniform("transformationMatrix", Transformation.createTransformationMatrix(entity));
         shader.setUniform("viewMatrix", Transformation.createViewMatrix(camera));
         shader.setUniform("worldColor", worldColor);
@@ -76,6 +74,8 @@ public class EntityRenderer
         shader.unbind();
     }
 
+    float animTime = 0;
+
     private void bind(Entity entity)
     {
         GL30.glBindVertexArray(entity.mesh.getVao());
@@ -87,17 +87,67 @@ public class EntityRenderer
         if(entity.material.color != null)
         {
             GL13.glActiveTexture(GL13.GL_TEXTURE0);
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D, entity.material.color.getId());
+            if(entity.material.color instanceof AnimatedTexture animatedTexture)
+            {
+                if(animatedTexture.position > animatedTexture.textures.length)
+                    animatedTexture.position = 0;
+                if(animatedTexture.position == 0)
+                    GL11.glBindTexture(GL11.GL_TEXTURE_2D, entity.material.color.getId());
+                else
+                    GL11.glBindTexture(GL11.GL_TEXTURE_2D, animatedTexture.textures[animatedTexture.position - 1].getId());
+                animTime += Looper.getDelta();
+                if(animTime > animatedTexture.frameTime)
+                {
+                    animatedTexture.position++;
+                    animTime = 0;
+                }
+            }
+            else
+                GL11.glBindTexture(GL11.GL_TEXTURE_2D, entity.material.color.getId());
         }
         if(entity.material.metallic != null)
         {
             GL13.glActiveTexture(GL13.GL_TEXTURE1);
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D, entity.material.metallic.getId());
+            if(entity.material.metallic instanceof AnimatedTexture animatedTexture)
+            {
+                if(animatedTexture.position > animatedTexture.textures.length)
+                    animatedTexture.position = 0;
+                if(animatedTexture.position == 0)
+                    GL11.glBindTexture(GL11.GL_TEXTURE_2D, entity.material.color.getId());
+                else
+                    GL11.glBindTexture(GL11.GL_TEXTURE_2D, animatedTexture.textures[animatedTexture.position - 1].getId());
+                animTime += Looper.getDelta();
+                if(animTime > animatedTexture.frameTime)
+                {
+                    animatedTexture.position++;
+                    animTime = 0;
+                }
+            }
+            else
+                GL11.glBindTexture(GL11.GL_TEXTURE_2D, entity.material.metallic.getId());
         }
         if(entity.material.specular != null)
         {
             GL13.glActiveTexture(GL13.GL_TEXTURE2);
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D, entity.material.specular.getId());
+
+            GL13.glActiveTexture(GL13.GL_TEXTURE1);
+            if(entity.material.specular instanceof AnimatedTexture animatedTexture)
+            {
+                if(animatedTexture.position > animatedTexture.textures.length)
+                    animatedTexture.position = 0;
+                if(animatedTexture.position == 0)
+                    GL11.glBindTexture(GL11.GL_TEXTURE_2D, entity.material.color.getId());
+                else
+                    GL11.glBindTexture(GL11.GL_TEXTURE_2D, animatedTexture.textures[animatedTexture.position - 1].getId());
+                animTime += Looper.getDelta();
+                if(animTime > animatedTexture.frameTime)
+                {
+                    animatedTexture.position++;
+                    animTime = 0;
+                }
+            }
+            else
+                GL11.glBindTexture(GL11.GL_TEXTURE_2D, entity.material.specular.getId());
         }
     }
 

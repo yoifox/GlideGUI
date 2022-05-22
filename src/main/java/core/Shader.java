@@ -22,8 +22,8 @@ public class Shader
     private int vertexId;
     private int fragmentId;
 
-    //private final Map<String, Integer> uniforms = new HashMap<>();
-    private final Set<Uniform> uniformSet = new HashSet<>();
+    private final Map<String, Integer> uniforms = new HashMap<>();
+    //private final Set<Uniform> uniformSet = new HashSet<>();
 
     public Shader(String vertexCode, String fragmentCode)
     {
@@ -82,14 +82,14 @@ public class Shader
     {
         int location = GL20.glGetUniformLocation(programId, uniformName);
         if(location < 0) throw new InvalidUniformLocationException(programId, uniformName, location);
-        //uniforms.put(uniformName, location);
-        uniformSet.add(new Uniform(uniformName, location, null));
+        uniforms.put(uniformName, location);
+        //uniformSet.add(new Uniform(uniformName, location, null));
     }
 
     public void cleanup()
     {
-        //uniforms.clear();
-        uniformSet.clear();
+        uniforms.clear();
+        //uniformSet.clear();
         if(programId != 0)
             GL20.glDeleteProgram(programId);
         GL20.glUseProgram(0);
@@ -97,54 +97,51 @@ public class Shader
 
     public void setUniform(String uniformName, Object value)
     {
-        Uniform uniform = getUniform(uniformName);
-        if(uniform == null) return;
-        int location = uniform.id;
-        if(uniform.value != null)
-            if(uniform.value.equals(value))
-                return;
+        //Uniform uniform = getUniform(uniformName);
+        //if(uniform == null) return;
+        //int location = uniform.id;
+        //if(uniform.value != null)
+        //    if(uniform.value.equals(value))
+        //        return;
         if(value instanceof Integer v)
         {
-            GL30.glUniform1i(location, v);
+            GL30.glUniform1i(uniforms.get(uniformName), v);
         }
         else if(value instanceof Float v)
         {
-            GL30.glUniform1f(location, v);
+            GL30.glUniform1f(uniforms.get(uniformName), v);
         }
         else if(value instanceof Vector2f v)
         {
-            GL30.glUniform2f(location, v.x, v.y);
+            GL30.glUniform2f(uniforms.get(uniformName), v.x, v.y);
         }
         else if(value instanceof Vector3f v)
         {
-            GL30.glUniform3f(location, v.x, v.y, v.z);
+            GL30.glUniform3f(uniforms.get(uniformName), v.x, v.y, v.z);
         }
         else if(value instanceof Vector4f v)
         {
-            GL30.glUniform4f(location, v.x, v.y, v.z, v.w);
+            GL30.glUniform4f(uniforms.get(uniformName), v.x, v.y, v.z, v.w);
         }
         else if(value instanceof Matrix4f v)
         {
             try(MemoryStack stack = MemoryStack.stackPush())
             {
-                GL30.glUniformMatrix4fv(location, false,
+                GL30.glUniformMatrix4fv(uniforms.get(uniformName), false,
                         v.get(stack.mallocFloat(16)));
             }
         }
-        else
-        {
-            return;
-        }
-        uniform.value = value;
+        //uniform.value = value;
     }
 
+    /*
     private Uniform getUniform(String name)
     {
         for(Uniform uniform : uniformSet)
             if(uniform.name.equals(name))
                 return uniform;
         return null;
-    }
+    }*/
 
     private static class Uniform
     {

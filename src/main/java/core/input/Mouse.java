@@ -7,7 +7,7 @@ public class Mouse
     private Window window;
     private double dx, dy;
     private double x, y, scroll;
-    private boolean inWindow = true, leftButtonPressed, rightButtonPressed, leftButtonJustPressed, rightButtonJustPressed;
+    private boolean inWindow = true, leftButtonPressed, rightButtonPressed, leftButtonJustPressed, rightButtonJustPressed, leftButtonJustReleased, rightButtonJustReleased;
 
     private double previousX, previousY, previousScroll;
     private boolean previousInWindow, previousLeftButtonPressed, previousRightButtonPressed;
@@ -57,6 +57,9 @@ public class Mouse
         leftButtonJustPressed = leftButtonPressed && !previousLeftButtonPressed;
         rightButtonJustPressed = rightButtonPressed && !previousRightButtonPressed;
 
+        leftButtonJustReleased = !leftButtonPressed && previousLeftButtonPressed;
+        rightButtonJustReleased = !rightButtonPressed && previousRightButtonPressed;
+
         previousLeftButtonPressed = leftButtonPressed;
         previousRightButtonPressed = rightButtonPressed;
 
@@ -101,6 +104,14 @@ public class Mouse
 
     public boolean isRightButtonJustPressed() {
         return rightButtonJustPressed;
+    }
+
+    public boolean isLeftButtonJustReleased() {
+        return leftButtonJustReleased;
+    }
+
+    public boolean isRightButtonJustReleased() {
+        return rightButtonJustReleased;
     }
 
     public double getPreviousX() {

@@ -48,7 +48,7 @@ public class Entity extends Body3d
     public CollisionShape3d addBoxCollision(String... masks)
     {
         CollisionShape3d collisionShape3d = new CollisionShape3d(getBoundingBox());
-        collisionShape3d.masks = Arrays.asList(masks);
+        collisionShape3d.masks.addAll(Arrays.asList(masks));
         addChild(collisionShape3d);
         return collisionShape3d;
     }

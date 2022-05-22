@@ -72,9 +72,10 @@ public class Window
 
         GLFW.glfwSetFramebufferSizeCallback(windowId, (windowId, width, height) ->
         {
-            Window.this.width = width;
-            Window.this.height = height;
-            projectionMatrix.setPerspective(FOV, (float)width / (float)height, Z_NEAR, Z_FAR);
+            this.width = width;
+            this.height = height;
+            float aspectRatio = ((float)width / (float)height);
+            projectionMatrix = projectionMatrix.setPerspective(FOV, aspectRatio, Z_NEAR, Z_FAR);
             isResized = true;
         });
 
@@ -107,6 +108,12 @@ public class Window
         ALC10.alcMakeContextCurrent(audioContext);
         ALCCapabilities alcCapabilities = ALC.createCapabilities(audioDevice);
         ALCapabilities alCapabilities = AL.createCapabilities(alcCapabilities);
+    }
+
+    public Matrix4f getProjectionMatrix() {
+        float aspectRatio = ((float)width / (float)height);
+        projectionMatrix = projectionMatrix.setPerspective(FOV, aspectRatio, Z_NEAR, Z_FAR);
+        return projectionMatrix;
     }
 
     protected void update()

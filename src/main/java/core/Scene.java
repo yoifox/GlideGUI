@@ -1,5 +1,7 @@
 package core;
 
+import core.tools.RayCast;
+import org.joml.Vector3f;
 import org.joml.Vector4f;
 import org.lwjgl.opengl.*;
 import core.body.*;
@@ -39,6 +41,8 @@ public class Scene implements Context
     protected FXAARenderer fxaaRenderer;
     public boolean stopped = false;
     public Texture grad, boxShadow;
+    RigidBody3d ray;
+    RayCast rayCast;
 
     private final List<Runnable> treeModification = new ArrayList<>();
     private Runnable changeScene;
@@ -74,6 +78,7 @@ public class Scene implements Context
         pointLights.clear();
         spotLights.clear();
 
+        ray.setPosition(camera.x, camera.y, camera.z);
         if(changeScene != null)
             changeScene.run();
     }
@@ -219,6 +224,8 @@ public class Scene implements Context
         }
         previousCollisionShape3ds = new ArrayList<>(collisionShape3ds);
         collisionShape3ds.clear();
+        Vector3f direction = rayCast.getRay(this, (float) mouseInput.getX(), (float) mouseInput.getY());
+        ray.move(direction.x / 100f, direction.y / 100f, direction.z / 100);
     }
 
     public void update(float delta) {}
@@ -251,6 +258,25 @@ public class Scene implements Context
         fontRoboto = objectLoader.loadFont(getClass(), "/fonts/roboto.ttf");
         grad = objectLoader.loadTexture(getClass(), "/img/gradV2.png");
         boxShadow = objectLoader.loadTexture(getClass(), "/img/boxShadowV2.png");
+
+        CollisionShape3d rayCollision = new CollisionShape3d(0);
+        rayCollision.masks.add("default");
+        ray = new RigidBody3d(rayCollision);
+        rayCast = new RayCast(camera);
+        rayCollision.collisionShapeListener = new CollisionShape3d.CollisionShapeListener() {
+            @Override
+            public void onCollisionEnter(CollisionShape3d shape, Vector3f normal) {
+                if(mouseInput.isLeftButtonJustPressed())
+                    shape.press(rayCollision, normal);
+            }
+
+            @Override
+            public void onCollisionLeave(CollisionShape3d shape) {
+
+            }
+        };
+
+        addBody(ray);
         initFbo();
 
         onCreate();

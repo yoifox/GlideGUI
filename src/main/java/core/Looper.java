@@ -16,6 +16,7 @@ public class Looper
     private static boolean isRunning;
     private static GLFWErrorCallback errorCallback;
     protected static float frame_time = 1f / 1000f;
+    private static float delta = 0;
 
     private static final LinkedBlockingQueue<Runnable> mainThreadTaskQueue = new LinkedBlockingQueue<>();
     private static final LinkedBlockingQueue<Runnable> physicsThreadTaskQueue = new LinkedBlockingQueue<>();
@@ -120,6 +121,9 @@ public class Looper
                 for(Window window : windows)
                 {
                     window.setGlContext();
+                    delta = (1f / fps) * windows.size();
+                    if(Float.isInfinite(delta))
+                        delta = 0;
                     update(window, (1f / fps) * windows.size());
                     frames++;
                 }
@@ -142,13 +146,10 @@ public class Looper
     private static void update(Window window, float delta)
     {
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
+        GL11.glViewport(0, 0, window.getWidth(), window.getHeight());
         if(window.isResized)
         {
-            GL11.glViewport(0, 0, window.getWidth(), window.getHeight());
-            window.getContext().render(delta);
-            window.update();
             window.isResized = false;
-            return;
         }
         window.getContext().render(delta);
         window.update();
@@ -178,6 +179,10 @@ public class Looper
                 }
             }
         });
+    }
+
+    public static float getDelta() {
+        return delta;
     }
 
     protected static Thread physics;
