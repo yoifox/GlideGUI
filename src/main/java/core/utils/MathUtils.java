@@ -100,7 +100,8 @@ public class MathUtils
         float depth = zf - zn;
 
         BoundingBox boundingBox =  new BoundingBox(width, height, depth);
-        boundingBox.setPosition(xn, yn, zn);
+        boundingBox.setPosition(xn + width / 2f, yn + height / 2f, zn + depth / 2f);
+        System.out.println(boundingBox.x + "," + boundingBox.y + "," + boundingBox.z);
         return boundingBox;
     }
 
@@ -139,10 +140,13 @@ public class MathUtils
 
     public static boolean pointInBox(BoundingBox box, Vector3f point)
     {
-        Vector3f center = box.getCenter();
-        float x = center.x;
-        float y = center.y;
-        float z = center.z;
+        //Vector3f center = box.getCenter();
+        //float x = center.x;
+        //float y = center.y;
+        //float z = center.z;
+        float x = box.x;
+        float y = box.y;
+        float z = box.z;
         float minHeight = y - box.height / 2, maxHeight = y + box.height / 2;
         float minWidth = x - box.width / 2, maxWidth = x + box.width / 2;
         float minDepth = z - box.depth / 2, maxDepth = z + box.depth / 2;

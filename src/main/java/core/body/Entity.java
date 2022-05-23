@@ -38,18 +38,24 @@ public class Entity extends Body3d
     {
         BoundingBox boundingBox = mesh.boundingBox;
         BoundingBox result = new BoundingBox(0, 0, 0);
+        assert boundingBox != null;
+
         result.x = boundingBox.x + x;
         result.y = boundingBox.y + y;
         result.z = boundingBox.z + z;
+
         result.width = boundingBox.width * scaleX;
         result.height = boundingBox.height * scaleY;
         result.depth = boundingBox.depth * scaleZ;
+
+        //result.x -= boundingBox.width / 2f / scaleX;
+        //result.z -= boundingBox.width / 2f / scaleZ;
         return result;
     }
 
     public CollisionShape3d addBoxCollision(String... masks)
     {
-        CollisionShape3d collisionShape3d = new CollisionShape3d(getBoundingBox());
+        CollisionShape3d collisionShape3d = new CollisionShape3d(mesh.boundingBox);
         collisionShape3d.masks.addAll(Arrays.asList(masks));
         addChild(collisionShape3d);
         return collisionShape3d;

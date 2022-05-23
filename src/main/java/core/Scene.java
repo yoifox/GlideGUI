@@ -145,7 +145,6 @@ public class Scene implements Context
                 BoundingBox boundingBox = entity.getBoundingBox();
                 bbCube.setScale(boundingBox.width / 2f + 0.05f, boundingBox.height / 2f + 0.05f, boundingBox.depth / 2f + 0.05f);
                 bbCube.y -= 0.05f;
-                System.out.println(boundingBox.getCenter().x + "," + boundingBox.getCenter().y + "," + boundingBox.getCenter().z);
                 entityRenderer.render(bbCube, camera, worldColor, pointLights, spotLights, directionalLight, distanceFog);
             }
         }
