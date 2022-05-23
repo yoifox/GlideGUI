@@ -45,7 +45,7 @@ public class ModelLoader
         {
             AIVector3D vector = uvsBuff.get(i);
             uvs[j++] = vector.x();
-            uvs[j++] = vector.y();
+            uvs[j++] = 1 - vector.y();
         }
 
         AIVector3D.Buffer normalsBuffer = mesh.mNormals();
@@ -94,7 +94,7 @@ public class ModelLoader
     {
         ByteBuffer buffer = Utils.loadResourceBuffer(cls, res);
         AIScene scene = Assimp.aiImportFileFromMemory(buffer, Assimp.aiProcess_JoinIdenticalVertices | Assimp.aiProcess_Triangulate |
-                Assimp.aiProcess_GenSmoothNormals | Assimp.aiProcess_TransformUVCoords | Assimp.aiProcess_ValidateDataStructure, "");
+                Assimp.aiProcess_GenSmoothNormals | Assimp.aiProcess_ValidateDataStructure, "");
         if(scene == null)
             throw new UnsupportedFileFormatException(res);
 
@@ -119,7 +119,7 @@ public class ModelLoader
         {
             AIVector3D vector = uvsBuff.get(i);
             uvs[j++] = vector.x();
-            uvs[j++] = vector.y();
+            uvs[j++] = 1 - vector.y();
         }
 
         AIVector3D.Buffer normalsBuffer = mesh.mNormals();

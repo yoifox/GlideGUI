@@ -7,8 +7,11 @@ struct Material
     vec4 specularValue;
     int hasColor;
     int hasMetallic;
+    int hasNormal;
     int hasSpecular;
     vec2 uvScale;
+    int hasTransparency;
+    float transparency;
 };
 
 struct DirectionalLight
@@ -41,11 +44,14 @@ in vec4 fragWorldPosition;
 in vec3 fragViewPosition;
 in mat4 fragViewMatrix;
 in mat4 fragTransformationMatrix;
+in mat4 fragTangentMatrix;
 
 uniform Material material;
 uniform sampler2D matColor;
 uniform sampler2D matMetallic;
 uniform sampler2D matSpecular;
+uniform sampler2D matTransparency;
+uniform sampler2D matNormal;
 uniform DirectionalLight directionalLight;
 uniform PointLight pointLights[32];
 uniform vec4 worldColor;
@@ -57,12 +63,24 @@ vec4 color();
 vec4 calcPointLight(PointLight pointLight);
 vec4 calcDirectionalLight(DirectionalLight directionalLight);
 
+vec3 normal;
+
 vec2 uv;
 
 void main()
 {
     uv = fragUv * material.uvScale;
-    fragColor = color();
+
+    if(material.hasNormal == 1)
+        normal = fragNormal * texture(matNormal, uv).xyz;
+    else
+        normal = fragNormal;
+    vec4 color = color();
+    if(material.hasTransparency == 1)
+        color.w = texture(matTransparency, uv).r;
+    else
+        color.w = material.transparency;
+    fragColor = color;
 }
 
 vec4 color()
@@ -101,7 +119,7 @@ vec4 color()
 vec4 calcDirectionalLight(DirectionalLight directionalLight)
 {
     vec3 lightDir = normalize(directionalLight.rotation - fragWorldPosition.xyz);
-    float specularFac = max(dot(fragNormal, lightDir), 0.0);
+    float specularFac = max(dot(normal, lightDir), 0.0);
     vec4 diffuseFac = specularFac * directionalLight.color * directionalLight.intensity;
 
     return diffuseFac;
@@ -110,7 +128,7 @@ vec4 calcDirectionalLight(DirectionalLight directionalLight)
 vec4 calcPointLight(PointLight pointLight)
 {
     vec3 lightDir = normalize(pointLight.position - fragWorldPosition.xyz);
-    float specularFac = max(dot(fragNormal, lightDir), 0.0);
+    float specularFac = max(dot(normal, lightDir), 0.0);
     vec4 diffuseFac = specularFac * pointLight.color * pointLight.intensity;
 
     return diffuseFac * (pointLight.radius / length(pointLight.position - fragWorldPosition.xyz));

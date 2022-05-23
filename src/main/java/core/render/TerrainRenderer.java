@@ -56,7 +56,7 @@ public class TerrainRenderer
     {
         if(scene.stopped) return;
 
-        Entity entity = new Entity(terrain.mesh, new Material(terrain.texture, null, null, null));
+        Entity entity = new Entity(terrain.mesh, new Material(terrain.texture, null, null, null, null));
 
         if(!entity.visible) return;
 

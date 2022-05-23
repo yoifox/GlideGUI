@@ -5,6 +5,7 @@ import org.joml.Vector3f;
 public class BoundingBox extends Body3d
 {
     public float width, height, depth;
+    public float width0, height0, depth0;
     public boolean visible = false;
 
     public BoundingBox(float x, float y, float z, float rotationX, float rotationY, float rotationZ, float scaleX, float scaleY, float scaleZ, float width, float height, float depth)
@@ -13,6 +14,9 @@ public class BoundingBox extends Body3d
         this.width = width;
         this.height = height;
         this.depth = depth;
+        this.width0 = width;
+        this.height0 = height;
+        this.depth0 = depth;
     }
 
     public BoundingBox(Body3d body3d, float width, float height, float depth)

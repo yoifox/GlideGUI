@@ -2,12 +2,20 @@ package core.body.ui;
 
 import core.Window;
 import core.input.Keyboard;
+import core.utils.MathUtils;
+import org.lwjgl.system.MathUtil;
 
-public class TextArea extends Text
+public class TextArea extends Button
 {
-    public TextArea(String text, int textSize, Font font)
+    boolean isFocused = false;
+    public Text text;
+    public boolean adjustWidth = true, adjustHeight = true;
+
+    public TextArea(float width, float height, int textSize, Font font)
     {
-        super(text, textSize, font);
+        super(width, height);
+        text = new Text("", textSize, font);
+        addChild(text);
     }
 
     @Override
@@ -17,30 +25,62 @@ public class TextArea extends Text
         scene.keyInput.addCharCallback(new Keyboard.CharCallback() {
             @Override
             public void onCharTyped(Window window, char key) {
-                append(key + "");
+                if(isFocused)
+                    text.append(key + "");
             }
         });
 
         scene.keyInput.addActionCallback(new Keyboard.ActionCallback() {
             @Override
             public void onAction(Window window, int action) {
+                if(!isFocused) return;
                 if(action == Keyboard.ACTION_BACKSPACE)
                 {
-                    if(!getText().equals(""))
-                        setText(getText().substring(0, getText().length() - 1));
+                    if(!text.getText().equals(""))
+                        text.setText(text.getText().substring(0, text.getText().length() - 1));
                 }
                 else if(action == Keyboard.ACTION_ENTER)
                 {
-                    if(!getText().equals(""))
-                        append("\n");
+                    if(!text.getText().equals(""))
+                        text.append("\n");
                 }
             }
         });
+
+        onClickListener = new OnClickListener() {
+            @Override
+            public void onClick(Button button) {
+                isFocused = true;
+            }
+        };
     }
 
     @Override
     public void update(float delta)
     {
         super.update(delta);
+        if(scene.mouseInput.isLeftButtonJustPressed())
+        {
+            if(!MathUtils.pointInQuad(this, (float) scene.mouseInput.getX(), (float) scene.mouseInput.getY()))
+            {
+                isFocused = false;
+            }
+        }
+        if(adjustWidth)
+        {
+            if(text.getWidth() > getWidth())
+            {
+                width = text.getWidth();
+                isWidthPercentage = false;
+            }
+        }
+        if(adjustHeight)
+        {
+            if(text.getHeight() > getHeight())
+            {
+                height = text.getHeight();
+                isHeightPercentage = false;
+            }
+        }
     }
 }

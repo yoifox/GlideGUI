@@ -1,5 +1,6 @@
 package core.utils;
 
+import core.body.Body3d;
 import org.joml.*;
 import core.body.BoundingBox;
 import core.body.ui.Component;
@@ -61,41 +62,13 @@ public class MathUtils
         return true;
     }
 
+    public static float distance(Body3d body, Body3d body2)
+    {
+        return (float) Math.sqrt((body2.x - body.x)*(body2.x - body.x) + (body2.y - body.y)*(body2.y - body.y) + (body2.z - body.z)*(body2.z - body.z));
+    }
+
     public static BoundingBox createBoundingBox(float[] vertices)
     {
-        /*
-        float minX = 0, minY = 0, minZ = 0, maxX = 0, maxY = 0, maxZ = 0;
-        float xSum = 0, ySum = 0, zSum = 0;
-
-        int i = 0;
-        while(i < vertices.length)
-        {
-            if(vertices[i] > maxX) maxX = vertices[i];
-            if(vertices[i] < minX) minX = vertices[i];
-            xSum += vertices[i];
-
-            i++;
-            if(vertices[i] > maxY) maxY = vertices[i];
-            if(vertices[i] < minY) minY = vertices[i];
-            ySum += vertices[i];
-
-            i++;
-            if(vertices[i] > maxZ) maxZ = vertices[i];
-            if(vertices[i] < minZ) minZ = vertices[i];
-            zSum += vertices[i];
-
-            i++;
-        }
-
-        float width = maxX - minX;
-        float height = maxY - minY;
-        float depth = maxZ - minZ;
-
-        float posX = xSum / (vertices.length / 3f) - width / 2f;
-        float posY = ySum / (vertices.length / 3f) - height / 2f;
-        float posZ = zSum / (vertices.length / 3f) - depth / 2f;
-
-        return new BoundingBox(posX, posY, posZ, 0, 0, 0, 1, 1, 1, width, height, depth);*/
         return createBoundingBox(vertices, new Matrix4f());
     }
 
@@ -166,9 +139,13 @@ public class MathUtils
 
     public static boolean pointInBox(BoundingBox box, Vector3f point)
     {
-        float minHeight = box.y - box.height / 2, maxHeight = box.y + box.height / 2;
-        float minWidth = box.x - box.width / 2, maxWidth = box.x + box.width / 2;
-        float minDepth = box.z - box.depth / 2, maxDepth = box.z + box.depth / 2;
+        Vector3f center = box.getCenter();
+        float x = center.x;
+        float y = center.y;
+        float z = center.z;
+        float minHeight = y - box.height / 2, maxHeight = y + box.height / 2;
+        float minWidth = x - box.width / 2, maxWidth = x + box.width / 2;
+        float minDepth = z - box.depth / 2, maxDepth = z + box.depth / 2;
         if(point.x <= minWidth || point.x >= maxWidth) return false;
         if(point.y <= minHeight || point.y >= maxHeight) return false;
         if(point.z <= minDepth || point.z >= maxDepth) return false;

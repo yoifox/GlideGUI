@@ -8,6 +8,7 @@ public class Entity extends Body3d
 {
     public Mesh mesh;
     public Material material;
+    public float[] uvs;
 
     public Entity(Mesh mesh) {
         this.mesh = mesh;
@@ -24,6 +25,7 @@ public class Entity extends Body3d
         super(x, y, z, rotationX, rotationY, rotationZ, scaleX, scaleY, scaleZ);
         this.mesh = mesh;
         this.material = material == null ? new Material() : material;
+        uvs = Arrays.copyOf(uvs, uvs.length);
     }
 
     @Override

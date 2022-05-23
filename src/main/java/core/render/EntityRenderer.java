@@ -36,6 +36,13 @@ public class EntityRenderer
         shader.createUniform("transformationMatrix");
         shader.createUniform("viewMatrix");
         shader.createUniform("worldColor");
+
+        shader.createUniform("matColor");
+        shader.createUniform("matMetallic");
+        shader.createUniform("matSpecular");
+        shader.createUniform("matTransparency");
+        shader.createUniform("matNormal");
+
         createDistanceFogUniform(shader);
         createMaterialUniform(shader);
         createPointLightsUniform(shader, 32);
@@ -55,6 +62,13 @@ public class EntityRenderer
         shader.setUniform("transformationMatrix", Transformation.createTransformationMatrix(entity));
         shader.setUniform("viewMatrix", Transformation.createViewMatrix(camera));
         shader.setUniform("worldColor", worldColor);
+
+        shader.setUniform("matColor", 0);
+        shader.setUniform("matMetallic", 1);
+        shader.setUniform("matSpecular", 2);
+        shader.setUniform("matTransparency", 3);
+        shader.setUniform("matNormal", 4);
+
         setMaterialUniform(shader, entity.material);
         setPointLightsUniform(shader, pointLights);
         setDistanceFogUniform(shader, distanceFog);
@@ -66,10 +80,17 @@ public class EntityRenderer
             GL11.glEnable(GL11.GL_CULL_FACE);
 
         bind(entity);
+        if(entity.material.transparencyValue < 1 || entity.material.transparency != null)
+        {
+            GL11.glDisable(GL11.GL_CULL_FACE);
+        }
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         GL11.glDrawElements(GL11.GL_TRIANGLES, entity.mesh.getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
         unbind();
 
         GL11.glEnable(GL11.GL_CULL_FACE);
+        GL11.glDisable(GL11.GL_BLEND);
 
         shader.unbind();
     }
@@ -129,8 +150,6 @@ public class EntityRenderer
         if(entity.material.specular != null)
         {
             GL13.glActiveTexture(GL13.GL_TEXTURE2);
-
-            GL13.glActiveTexture(GL13.GL_TEXTURE1);
             if(entity.material.specular instanceof AnimatedTexture animatedTexture)
             {
                 if(animatedTexture.position > animatedTexture.textures.length)
@@ -148,6 +167,48 @@ public class EntityRenderer
             }
             else
                 GL11.glBindTexture(GL11.GL_TEXTURE_2D, entity.material.specular.getId());
+        }
+        if(entity.material.transparency != null)
+        {
+            GL13.glActiveTexture(GL13.GL_TEXTURE3);
+            if(entity.material.transparency instanceof AnimatedTexture animatedTexture)
+            {
+                if(animatedTexture.position > animatedTexture.textures.length)
+                    animatedTexture.position = 0;
+                if(animatedTexture.position == 0)
+                    GL11.glBindTexture(GL11.GL_TEXTURE_2D, entity.material.color.getId());
+                else
+                    GL11.glBindTexture(GL11.GL_TEXTURE_2D, animatedTexture.textures[animatedTexture.position - 1].getId());
+                animTime += Looper.getDelta();
+                if(animTime > animatedTexture.frameTime)
+                {
+                    animatedTexture.position++;
+                    animTime = 0;
+                }
+            }
+            else
+                GL11.glBindTexture(GL11.GL_TEXTURE_2D, entity.material.transparency.getId());
+        }
+        if(entity.material.normal != null)
+        {
+            GL13.glActiveTexture(GL13.GL_TEXTURE4);
+            if(entity.material.normal instanceof AnimatedTexture animatedTexture)
+            {
+                if(animatedTexture.position > animatedTexture.textures.length)
+                    animatedTexture.position = 0;
+                if(animatedTexture.position == 0)
+                    GL11.glBindTexture(GL11.GL_TEXTURE_2D, entity.material.color.getId());
+                else
+                    GL11.glBindTexture(GL11.GL_TEXTURE_2D, animatedTexture.textures[animatedTexture.position - 1].getId());
+                animTime += Looper.getDelta();
+                if(animTime > animatedTexture.frameTime)
+                {
+                    animatedTexture.position++;
+                    animTime = 0;
+                }
+            }
+            else
+                GL11.glBindTexture(GL11.GL_TEXTURE_2D, entity.material.normal.getId());
         }
     }
 
@@ -172,8 +233,11 @@ public class EntityRenderer
         shader.createUniform("material.specularValue");
         shader.createUniform("material.hasColor");
         shader.createUniform("material.hasMetallic");
+        shader.createUniform("material.hasNormal");
         shader.createUniform("material.hasSpecular");
+        shader.createUniform("material.hasTransparency");
         shader.createUniform("material.uvScale");
+        shader.createUniform("material.transparency");
     }
 
     public static void createDistanceFogUniform(Shader shader)
@@ -195,8 +259,11 @@ public class EntityRenderer
         shader.setUniform("material.specularValue", material.specularValue.vec4());
         shader.setUniform("material.hasColor", material.color == null ? 0 : 1);
         shader.setUniform("material.hasMetallic", material.metallic == null ? 0 : 1);
+        shader.setUniform("material.hasNormal", material.normal == null ? 0 : 1);
         shader.setUniform("material.hasSpecular", material.specular == null ? 0 : 1);
         shader.setUniform("material.uvScale", new Vector2f(material.uvScaleX, material.uvScaleY));
+        shader.setUniform("material.transparency", material.transparencyValue);
+        shader.setUniform("material.hasTransparency", material.transparency == null ? 0 : 1);
     }
 
     public static void createPointLightsUniform(Shader shader, int size)

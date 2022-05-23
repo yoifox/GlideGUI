@@ -46,12 +46,21 @@ public class CollisionShape3d extends PhysicsBody3d
         BoundingBox boundingBox = this.boundingBox;
         BoundingBox result = new BoundingBox(0, 0, 0);
         assert boundingBox != null;
-        result.x = boundingBox.x + x + (boundingBox.width) / 2f;
-        result.y = boundingBox.y + y + (boundingBox.height * scaleY) / 2f; //not sure why but it works
-        result.z = boundingBox.z + z + (boundingBox.depth) / 2f;
+        //result.x = boundingBox.x + x - (boundingBox.width) / 2f;
+        //result.y = boundingBox.y + y + (boundingBox.height * scaleY) / 2f; //not sure why but it works
+        //result.z = boundingBox.z + z - (boundingBox.depth) / 2f;
+
+        result.x = boundingBox.x + x;
+        result.y = boundingBox.y + y;
+        result.z = boundingBox.z + z;
+
         result.width = boundingBox.width * scaleX;
         result.height = boundingBox.height * scaleY;
         result.depth = boundingBox.depth * scaleZ;
+
+        //result.x -= boundingBox.width * scaleX;
+        //result.y -= boundingBox.height * scaleX;
+        //result.z -= boundingBox.width * scaleX;
         return result;
     }
 

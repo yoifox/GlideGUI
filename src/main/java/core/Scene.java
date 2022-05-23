@@ -41,8 +41,9 @@ public class Scene implements Context
     protected FXAARenderer fxaaRenderer;
     public boolean stopped = false;
     public Texture grad, boxShadow;
-    RigidBody3d ray;
-    RayCast rayCast;
+    public RigidBody3d ray;
+    public RayCast rayCast;
+    public Mesh cubeMesh;
 
     private final List<Runnable> treeModification = new ArrayList<>();
     private Runnable changeScene;
@@ -78,7 +79,10 @@ public class Scene implements Context
         pointLights.clear();
         spotLights.clear();
 
-        ray.setPosition(camera.x, camera.y, camera.z);
+        ray.x = camera.x;
+        ray.y = camera.y;
+        ray.z = camera.z;
+
         if(changeScene != null)
             changeScene.run();
     }
@@ -136,6 +140,13 @@ public class Scene implements Context
             entityRenderer.render(entity, camera, worldColor, previousPointLights, previousSpotLights, directionalLight, distanceFog);
             if(entity.mesh.boundingBox.visible)
             {
+                Entity bbCube = new Entity(cubeMesh, new Material(new ColorValue(1, 0, 0, 1), null, null, 0.2f));
+                bbCube.setPosition(entity.x, entity.y, entity.z);
+                BoundingBox boundingBox = entity.getBoundingBox();
+                bbCube.setScale(boundingBox.width / 2f + 0.05f, boundingBox.height / 2f + 0.05f, boundingBox.depth / 2f + 0.05f);
+                bbCube.y -= 0.05f;
+                System.out.println(boundingBox.getCenter().x + "," + boundingBox.getCenter().y + "," + boundingBox.getCenter().z);
+                entityRenderer.render(bbCube, camera, worldColor, pointLights, spotLights, directionalLight, distanceFog);
             }
         }
         else if(body instanceof Terrain terrain)
@@ -258,6 +269,8 @@ public class Scene implements Context
         fontRoboto = objectLoader.loadFont(getClass(), "/fonts/roboto.ttf");
         grad = objectLoader.loadTexture(getClass(), "/img/gradV2.png");
         boxShadow = objectLoader.loadTexture(getClass(), "/img/boxShadowV2.png");
+        directionalLight = new DirectionalLight(20, 20, 20, 1, ColorValue.COLOR_WHITE);
+        cubeMesh = objectLoader.loadMesh(getClass(), "/shapes/cube.fbx");
 
         CollisionShape3d rayCollision = new CollisionShape3d(0);
         rayCollision.masks.add("default");
@@ -432,6 +445,6 @@ public class Scene implements Context
         GL11.glClearColor(r, g, b, a);
     }
 
-    private Vector4f worldColor = new Vector4f(1, 1, 1, 1);
+    private Vector4f worldColor = new Vector4f(0.5f, 0.5f, 0.5f, 1);
     public void setWorldColor(float r, float g, float b, float a) { worldColor = new Vector4f(r, g, b, a); };
 }
