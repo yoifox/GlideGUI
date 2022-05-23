@@ -52,9 +52,6 @@ public class CollisionShape3d extends PhysicsBody3d
         result.depth = boundingBox.depth * scaleZ;
 
         result.setPosition(x, y + result.height / 2f, z);
-
-        //result.x -= boundingBox.width / 2f / scaleX;
-        //result.z -= boundingBox.width / 2f / scaleZ;
         return result;
     }
 

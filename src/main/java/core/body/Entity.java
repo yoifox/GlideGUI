@@ -40,16 +40,11 @@ public class Entity extends Body3d
         BoundingBox result = new BoundingBox(0, 0, 0);
         assert boundingBox != null;
 
-        result.x = boundingBox.x + x;
-        result.y = boundingBox.y + y;
-        result.z = boundingBox.z + z;
-
         result.width = boundingBox.width * scaleX;
         result.height = boundingBox.height * scaleY;
         result.depth = boundingBox.depth * scaleZ;
 
-        //result.x -= boundingBox.width / 2f / scaleX;
-        //result.z -= boundingBox.width / 2f / scaleZ;
+        result.setPosition(x, y + result.height / 2f, z);
         return result;
     }
 
