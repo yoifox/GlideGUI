@@ -44,7 +44,7 @@ in vec4 fragWorldPosition;
 in vec3 fragViewPosition;
 in mat4 fragViewMatrix;
 in mat4 fragTransformationMatrix;
-in mat4 fragTangentMatrix;
+//in mat3 fragTangentMatrix;
 
 uniform Material material;
 uniform sampler2D matColor;

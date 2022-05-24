@@ -13,7 +13,7 @@ out vec4 fragWorldPosition;
 out vec3 fragViewPosition;
 out mat4 fragViewMatrix;
 out mat4 fragTransformationMatrix;
-out mat3 fragTangentMatrix;
+//out mat3 fragTangentMatrix;
 
 uniform mat4 projectionMatrix;
 uniform mat4 transformationMatrix;
@@ -37,9 +37,9 @@ void main()
     vec3 tangent_ = normalize((viewMatrix*vec4(tangent, 0.0)).xyz);
     vec3 biTangent_ = normalize(cross(normal_, tangent_));
 
-    fragTangentMatrix = mat3(
-        tangent_.x, biTangent_.x, normal_.x,
-        tangent_.y, biTangent_.y, normal_.y,
-        tangent_.z, biTangent_.z, normal_.z
-    );
+    //fragTangentMatrix = mat3(
+    //    tangent_.x, biTangent_.x, normal_.x,
+    //    tangent_.y, biTangent_.y, normal_.y,
+    //    tangent_.z, biTangent_.z, normal_.z
+    //);
 }
