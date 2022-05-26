@@ -15,8 +15,8 @@ import core.Window;
 import core.body.light.DirectionalLight;
 import core.body.light.PointLight;
 import core.body.light.SpotLight;
-import core.utils.Transformation;
-import core.utils.Utils;
+import core.util.Transformation;
+import core.util.Util;
 
 import java.util.List;
 
@@ -28,8 +28,8 @@ public class EntityRenderer
 
     public void init(Scene scene)
     {
-        shader = new Shader(Utils.loadResourceString(getClass(), "/shaders/entity.vert"),
-                Utils.loadResourceString(getClass(), "/shaders/entity.frag"));
+        shader = new Shader(Util.loadResourceString(getClass(), "/shaders/entity.vert"),
+                Util.loadResourceString(getClass(), "/shaders/entity.frag"));
         shader.link();
 
         shader.createUniform("projectionMatrix");

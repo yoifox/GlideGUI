@@ -2,7 +2,7 @@ package core.body;
 
 import org.lwjgl.opengl.GL11;
 import core.loader.ObjectLoader;
-import core.utils.Utils;
+import core.util.Util;
 
 import java.nio.ByteBuffer;
 
@@ -37,7 +37,7 @@ public class Texture
     public void setPixelRGBA(int x, int y, int r, int g, int b, int a)
     {
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, id);
-        GL11.glTexSubImage2D(GL11.GL_TEXTURE_2D, 0, x, y, 1, 1, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, Utils.wrap(new byte[]{(byte) r, (byte) g, (byte) b, (byte) a}));
+        GL11.glTexSubImage2D(GL11.GL_TEXTURE_2D, 0, x, y, 1, 1, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, Util.wrap(new byte[]{(byte) r, (byte) g, (byte) b, (byte) a}));
         //buffer.put(x*y*4, (byte) r);
         //buffer.put(x*y*4 + 1, (byte) g);
         //buffer.put(x*y*4 + 2, (byte) b);
@@ -55,7 +55,7 @@ public class Texture
         //bytes[2] = buffer.get(pixelOffset + 2);
         //bytes[3] = buffer.get(pixelOffset + 3);
 
-        return Utils.bytesToInt(bytes);
+        return Util.bytesToInt(bytes);
     }
 
     public int[] getPixelBytesRGBA(int x, int y)

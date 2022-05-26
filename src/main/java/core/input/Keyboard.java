@@ -13,11 +13,11 @@ import java.util.Map;
 public class Keyboard
 {
     Window window;
-    private Map<Integer, Boolean> keyPressedMap = new HashMap<>();
-    private List<Integer> justPressed = new ArrayList<>();
-    private List<Integer> justReleased = new ArrayList<>();
-    private List<CharCallback> charCallbacks = new ArrayList<>();
-    private List<ActionCallback> actionCallbacks = new ArrayList<>();
+    private final Map<Integer, Boolean> keyPressedMap = new HashMap<>();
+    private final List<Integer> justPressed = new ArrayList<>();
+    private final List<Integer> justReleased = new ArrayList<>();
+    private final List<CharCallback> charCallbacks = new ArrayList<>();
+    private final List<ActionCallback> actionCallbacks = new ArrayList<>();
 
     public void init(Window window)
     {

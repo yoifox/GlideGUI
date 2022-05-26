@@ -4,8 +4,8 @@ import core.body.Texture;
 import org.joml.Vector2f;
 import core.body.Body2d;
 import core.body.ColorValue;
-import core.utils.MathUtils;
-import core.utils.Transformation;
+import core.util.MathUtil;
+import core.util.Transformation;
 
 public class Component extends Body2d
 {
@@ -312,7 +312,7 @@ public class Component extends Body2d
         if(parent instanceof Component component)
         {
             if(visibleOutsideParentBounds) return false;
-            return !MathUtils.pointInQuad(component, x, y);
+            return !MathUtil.pointInQuad(component, x, y);
         }
         return !scene.mouseInput.isInWindow();
     }

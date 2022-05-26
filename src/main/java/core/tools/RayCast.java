@@ -1,9 +1,8 @@
 package core.tools;
 
 import core.Scene;
-import core.body.Body;
 import core.body.Camera;
-import core.utils.Transformation;
+import core.util.Transformation;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;

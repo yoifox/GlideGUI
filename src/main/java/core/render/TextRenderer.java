@@ -13,8 +13,8 @@ import core.body.Mesh;
 import core.body.Texture;
 import core.body.ui.*;
 import core.loader.ObjectLoader;
-import core.utils.Transformation;
-import core.utils.Utils;
+import core.util.Transformation;
+import core.util.Util;
 
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
@@ -38,8 +38,8 @@ public class TextRenderer
         this.scene = scene;
         objectLoader = new ObjectLoader(scene);
         this.window = scene.window;
-        shader = new Shader(Utils.loadResourceString(getClass(), "/shaders/ui_component.vert"),
-                Utils.loadResourceString(getClass(), "/shaders/ui_component.frag"));
+        shader = new Shader(Util.loadResourceString(getClass(), "/shaders/ui_component.vert"),
+                Util.loadResourceString(getClass(), "/shaders/ui_component.frag"));
         shader.link();
         shader.createUniform("transformationMatrix");
         shader.createUniform("componentSize");

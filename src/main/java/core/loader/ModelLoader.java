@@ -3,16 +3,11 @@ package core.loader;
 import core.body.BoundingBox;
 import core.body.Mesh;
 import core.err.UnsupportedFileFormatException;
-import core.utils.MathUtils;
-import core.utils.Utils;
-import org.lwjgl.PointerBuffer;
+import core.util.MathUtil;
+import core.util.Util;
 import org.lwjgl.assimp.*;
 
-import java.nio.Buffer;
 import java.nio.ByteBuffer;
-import java.nio.IntBuffer;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 public class ModelLoader
@@ -85,14 +80,14 @@ public class ModelLoader
             }
         }
 
-        BoundingBox boundingBox = MathUtils.createBoundingBox(vertices);
+        BoundingBox boundingBox = MathUtil.createBoundingBox(vertices);
         Assimp.aiReleaseImport(scene);
         return loader.loadObject(vertices, uvs, normals, indices, tangents, boundingBox);
     }
 
     public static Mesh load(Class<?> cls, String res, ObjectLoader loader)
     {
-        ByteBuffer buffer = Utils.loadResourceBuffer(cls, res);
+        ByteBuffer buffer = Util.loadResourceBuffer(cls, res);
         AIScene scene = Assimp.aiImportFileFromMemory(buffer, Assimp.aiProcess_JoinIdenticalVertices | Assimp.aiProcess_Triangulate |
                 Assimp.aiProcess_GenSmoothNormals | Assimp.aiProcess_ValidateDataStructure, "");
         if(scene == null)
@@ -159,7 +154,7 @@ public class ModelLoader
             }
         }
 
-        BoundingBox boundingBox = MathUtils.createBoundingBox(vertices);
+        BoundingBox boundingBox = MathUtil.createBoundingBox(vertices);
         Assimp.aiReleaseImport(scene);
         return loader.loadObject(vertices, uvs, normals, indices, tangents, boundingBox);
     }

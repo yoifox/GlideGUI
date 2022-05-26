@@ -1,6 +1,6 @@
 package core.body;
 
-import core.utils.MathUtils;
+import core.util.MathUtil;
 import org.joml.Vector3f;
 
 import java.util.ArrayList;
@@ -32,11 +32,11 @@ public class RigidBody3d extends PhysicsBody3d
             if(c == collisionShape) continue;
             if(!shouldDetect(c.masks)) continue;
             Vector3f intersectingVertex;
-            Vector3f normal = MathUtils.normal(new Vector3f(x, y, z), c.getBoundingBox().getCenter());
+            Vector3f normal = MathUtil.normal(new Vector3f(x, y, z), c.getBoundingBox().getCenter());
             if(collisionShape.singleVertex)
-                intersectingVertex = MathUtils.moveVertexAlongNormal(new Vector3f(x, y, z), normal, collisionShape.getSingleVertexRadius());
+                intersectingVertex = MathUtil.moveVertexAlongNormal(new Vector3f(x, y, z), normal, collisionShape.getSingleVertexRadius());
             else
-                intersectingVertex = MathUtils.moveVertexAlongNormal(new Vector3f(x, y, z), normal, 0);
+                intersectingVertex = MathUtil.moveVertexAlongNormal(new Vector3f(x, y, z), normal, 0);
 
             if(c.boxCollision) //collisionShape is a box
             {
@@ -45,10 +45,11 @@ public class RigidBody3d extends PhysicsBody3d
                     int i = 0;
                     BoundingBox box = collisionShape.getBoundingBox();
                     boolean isColliding = false;
-                    for(int j = 0; j < box.getVertices().length; j++)
+                    float[] vertices = box.getVertices();
+                    for(int j = 0; j < vertices.length / 3; j++)
                     {
-                        Vector3f vertex = new Vector3f(box.getVertices()[i++], box.getVertices()[i++], box.getVertices()[i++]);
-                        if(MathUtils.pointInBox(c.getBoundingBox(), vertex))
+                        Vector3f vertex = new Vector3f(vertices[i++], vertices[i++], vertices[i++]);
+                        if(MathUtil.pointInBox(c.getBoundingBox(), vertex))
                             isColliding = true;
                     }
 
@@ -74,7 +75,7 @@ public class RigidBody3d extends PhysicsBody3d
                 }
                 else if(collisionShape.singleVertex) //RigidBody is a single vertex
                 {
-                    if(MathUtils.pointInBox(c.getBoundingBox(), intersectingVertex))
+                    if(MathUtil.pointInBox(c.getBoundingBox(), intersectingVertex))
                     {
                         if(!collidingWith.contains(c))
                         {

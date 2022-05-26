@@ -1,7 +1,7 @@
 package core.body.ui;
 
 import core.body.ColorValue;
-import core.utils.MathUtils;
+import core.util.MathUtil;
 
 public class Button extends Component
 {
@@ -64,7 +64,7 @@ public class Button extends Component
     {
         super.update(delta);
 
-        if(MathUtils.pointInQuad(this, (float) scene.mouseInput.getX(), (float) scene.mouseInput.getY()) &&
+        if(MathUtil.pointInQuad(this, (float) scene.mouseInput.getX(), (float) scene.mouseInput.getY()) &&
                 !isOutsideParentBounds((float) scene.mouseInput.getX(), (float) scene.mouseInput.getY()))
         {
             if(scene.mouseInput.isLeftButtonPressed() || (isPressed && scene.mouseInput.isLeftButtonPressed()))

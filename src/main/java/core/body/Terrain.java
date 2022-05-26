@@ -3,7 +3,7 @@ package core.body;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import core.loader.ObjectLoader;
-import core.utils.MathUtils;
+import core.util.MathUtil;
 
 public class Terrain extends Body3d
 {
@@ -117,7 +117,7 @@ public class Terrain extends Body3d
                 indices[counter++] = bottomRight;
             }
         }
-        return objectLoader.loadObject(vertices, uvs, normals, indices, MathUtils.createBoundingBox(vertices));
+        return objectLoader.loadObject(vertices, uvs, normals, indices, MathUtil.createBoundingBox(vertices));
     }
 
     private float calcHeight(int x, int z)
@@ -187,13 +187,13 @@ public class Terrain extends Body3d
         float result;
         if (xCoord <= (1-zCoord))
         {
-            result = MathUtils.barryCentric(new Vector3f(0, calcHeight(gridX, gridZ), 0), new Vector3f(1,
+            result = MathUtil.barryCentric(new Vector3f(0, calcHeight(gridX, gridZ), 0), new Vector3f(1,
                             calcHeight(gridX + 1, gridZ), 0), new Vector3f(0,
                             calcHeight(gridX, gridZ + 1), 1), new Vector2f(xCoord, zCoord));
         }
         else
         {
-            result = MathUtils.barryCentric(new Vector3f(1, calcHeight(gridX + 1, gridZ), 0), new Vector3f(1,
+            result = MathUtil.barryCentric(new Vector3f(1, calcHeight(gridX + 1, gridZ), 0), new Vector3f(1,
                             calcHeight(gridX + 1, gridZ + 1), 1), new Vector3f(0,
                             calcHeight(gridX, gridZ + 1), 1), new Vector2f(xCoord, zCoord));
         }

@@ -36,11 +36,13 @@ public class BoundingBox extends Body3d
 
     public Vector3f getCenter()
     {
-        return new Vector3f((x + width) / 2, (y + height) / 2, (z + depth) / 2);
+        //return new Vector3f((x + width) / 2, (y + height) / 2, (z + depth) / 2);
+        return new Vector3f(x, y, z);
     }
 
     public float[] getVertices()
     {
+        float y = this.y - height / 2f;
         return new float[] {
                 x, y, z,
                 x + width, y, z,

@@ -17,8 +17,8 @@ import core.body.Mesh;
 import core.body.ui.Component;
 import core.body.ui.TextCharacter;
 import core.loader.ObjectLoader;
-import core.utils.Transformation;
-import core.utils.Utils;
+import core.util.Transformation;
+import core.util.Util;
 
 public class GuiRenderer
 {
@@ -29,8 +29,8 @@ public class GuiRenderer
     {
         this.scene = scene;
         this.window = scene.window;
-        shader = new Shader(Utils.loadResourceString(getClass(), "/shaders/ui_component.vert"),
-                Utils.loadResourceString(getClass(), "/shaders/ui_component.frag"));
+        shader = new Shader(Util.loadResourceString(getClass(), "/shaders/ui_component.vert"),
+                Util.loadResourceString(getClass(), "/shaders/ui_component.frag"));
         shader.link();
         shader.createUniform("transformationMatrix");
         shader.createUniform("componentSize");

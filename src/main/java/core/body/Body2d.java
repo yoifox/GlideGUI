@@ -1,7 +1,7 @@
 package core.body;
 
 import org.joml.Vector2f;
-import core.utils.MathUtils;
+import core.util.MathUtil;
 
 import java.util.Map;
 
@@ -72,12 +72,12 @@ public class Body2d extends Body
         previousRotation = rotation;
         if(parent instanceof Body3d body3d)
         {
-            Vector2f newPos = MathUtils.rotateVector(x, y, body3d.x, body3d.y, angle);
+            Vector2f newPos = MathUtil.rotateVector(x, y, body3d.x, body3d.y, angle);
             setPosition(newPos.x, newPos.y);
         }
         else if(parent instanceof Body2d body2d)
         {
-            Vector2f newPos = MathUtils.rotateVector(x, y, body2d.x, body2d.y, angle);
+            Vector2f newPos = MathUtil.rotateVector(x, y, body2d.x, body2d.y, angle);
             setPosition(newPos.x, newPos.y);
         }
         rotation += angle;
@@ -105,12 +105,12 @@ public class Body2d extends Body
 
         if(parent instanceof Body3d body3d)
         {
-            Vector2f newPos = MathUtils.scaleVector(this.x, this.y, body3d.x, body3d.y, x, y);
+            Vector2f newPos = MathUtil.scaleVector(this.x, this.y, body3d.x, body3d.y, x, y);
             setPosition(newPos.x, newPos.y);
         }
         else if(parent instanceof Body2d body2d)
         {
-            Vector2f newPos = MathUtils.scaleVector(this.x, this.y, body2d.x, body2d.y, x, y);
+            Vector2f newPos = MathUtil.scaleVector(this.x, this.y, body2d.x, body2d.y, x, y);
             setPosition(newPos.x, newPos.y);
         }
 

@@ -17,15 +17,13 @@ import core.body.Mesh;
 import core.body.Sound;
 import core.body.Texture;
 import core.body.ui.Font;
-import core.meta.Info;
-import core.utils.Utils;
+import core.util.Util;
 
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.lwjgl.system.MemoryStack.stackPush;
@@ -118,7 +116,7 @@ public class ObjectLoader
         int vbo = GL15.glGenBuffers();
         vbos.add(vbo);
         GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, vbo);
-        IntBuffer buffer = Utils.wrap(indices);
+        IntBuffer buffer = Util.wrap(indices);
         GL15.glBufferData(GL15.GL_ELEMENT_ARRAY_BUFFER, buffer, GL15.GL_STATIC_DRAW);
         return vbo;
     }
@@ -136,7 +134,7 @@ public class ObjectLoader
         int vbo = GL15.glGenBuffers();
         vbos.add(vbo);
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vbo);
-        FloatBuffer buffer = Utils.wrap(data);
+        FloatBuffer buffer = Util.wrap(data);
         GL15.glBufferData(GL15.GL_ARRAY_BUFFER, buffer, GL15.GL_STATIC_DRAW);
         GL20.glVertexAttribPointer(attrNo, vertexCount, GL11.GL_FLOAT, false, 0, 0);
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
@@ -198,7 +196,7 @@ public class ObjectLoader
         IntBuffer channelsBuffer = stack.mallocInt(1);
         IntBuffer sampleRateBuffer = stack.mallocInt(1);
 
-        ByteBuffer fileBuffer = Utils.loadResourceBuffer(cls, res);
+        ByteBuffer fileBuffer = Util.loadResourceBuffer(cls, res);
 
         ShortBuffer decodedAudioBuffer = STBVorbis.stb_vorbis_decode_memory(fileBuffer, channelsBuffer, sampleRateBuffer);
         assert decodedAudioBuffer != null;
@@ -277,7 +275,7 @@ public class ObjectLoader
             IntBuffer height = stack.mallocInt(1);
             IntBuffer channels = stack.mallocInt(1);
 
-            buffer = STBImage.stbi_load_from_memory(Utils.loadResourceBuffer(cls, res), w, h, c, 4);
+            buffer = STBImage.stbi_load_from_memory(Util.loadResourceBuffer(cls, res), w, h, c, 4);
             if(buffer == null)
                 throw new RuntimeException(STBImage.stbi_failure_reason());
             w[0] = width.get();
@@ -327,7 +325,7 @@ public class ObjectLoader
             IntBuffer h = stack.mallocInt(1);
             IntBuffer c = stack.mallocInt(1);
 
-            buffer = STBImage.stbi_load_from_memory(Utils.loadResourceBuffer(cls, res), w, h, c, 4);
+            buffer = STBImage.stbi_load_from_memory(Util.loadResourceBuffer(cls, res), w, h, c, 4);
             if(buffer == null)
                 throw new RuntimeException(STBImage.stbi_failure_reason());
             width = w.get();
@@ -384,7 +382,7 @@ public class ObjectLoader
         ByteBuffer ttfBuffer;
         try
         {
-            ttfBuffer = Utils.loadFile(src);
+            ttfBuffer = Util.loadFile(src);
         }
         catch (Exception e)
         {
@@ -405,7 +403,7 @@ public class ObjectLoader
         ByteBuffer ttfBuffer;
         try
         {
-            ttfBuffer = Utils.loadResourceBuffer(cls, src);
+            ttfBuffer = Util.loadResourceBuffer(cls, src);
         }
         catch (Exception e)
         {

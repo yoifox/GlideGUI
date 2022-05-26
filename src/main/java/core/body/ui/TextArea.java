@@ -2,8 +2,7 @@ package core.body.ui;
 
 import core.Window;
 import core.input.Keyboard;
-import core.utils.MathUtils;
-import org.lwjgl.system.MathUtil;
+import core.util.MathUtil;
 
 public class TextArea extends Button
 {
@@ -61,7 +60,7 @@ public class TextArea extends Button
         super.update(delta);
         if(scene.mouseInput.isLeftButtonJustPressed())
         {
-            if(!MathUtils.pointInQuad(this, (float) scene.mouseInput.getX(), (float) scene.mouseInput.getY()))
+            if(!MathUtil.pointInQuad(this, (float) scene.mouseInput.getX(), (float) scene.mouseInput.getY()))
             {
                 isFocused = false;
             }

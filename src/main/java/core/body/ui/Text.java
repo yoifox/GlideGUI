@@ -3,8 +3,8 @@ package core.body.ui;
 import org.joml.Vector2f;
 import core.body.Body;
 import core.body.ColorValue;
-import core.utils.Const;
-import core.utils.Transformation;
+import core.util.Const;
+import core.util.Transformation;
 
 import java.util.Map;
 

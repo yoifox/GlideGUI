@@ -1,7 +1,7 @@
 package core.body;
 
 import org.joml.Vector4f;
-import core.utils.Utils;
+import core.util.Util;
 
 public class ColorValue
 {
@@ -21,7 +21,7 @@ public class ColorValue
 
     public ColorValue(int color)
     {
-        int[] bytes = Utils.intToBytes(color);
+        int[] bytes = Util.intToBytes(color);
         int[] ints = new int[] {bytes[0], bytes[1], bytes[2], bytes[3]};
         this.color.x = ints[0] / 256f;
         this.color.y = ints[1] / 256f;
@@ -39,7 +39,7 @@ public class ColorValue
 
     public void setColor(int color)
     {
-        int[] bytes = Utils.intToBytes(color);
+        int[] bytes = Util.intToBytes(color);
         int[] ints = new int[] {bytes[0], bytes[1], bytes[2], bytes[3]};
         this.color.x = ints[0] / 256f;
         this.color.y = ints[1] / 256f;

@@ -13,8 +13,8 @@ import core.body.*;
 import core.body.light.DirectionalLight;
 import core.body.light.PointLight;
 import core.body.light.SpotLight;
-import core.utils.Transformation;
-import core.utils.Utils;
+import core.util.Transformation;
+import core.util.Util;
 
 import java.util.List;
 
@@ -27,8 +27,8 @@ public class TerrainRenderer
 
     public void init(Scene scene)
     {
-        shader = new Shader(Utils.loadResourceString(getClass(), "/shaders/terrain.vert"),
-                Utils.loadResourceString(getClass(), "/shaders/terrain.frag"));
+        shader = new Shader(Util.loadResourceString(getClass(), "/shaders/terrain.vert"),
+                Util.loadResourceString(getClass(), "/shaders/terrain.frag"));
         shader.link();
 
         shader.createUniform("projectionMatrix");

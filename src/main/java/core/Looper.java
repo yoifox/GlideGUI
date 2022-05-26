@@ -3,11 +3,10 @@ package core;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.opengl.GL11;
-import core.utils.Const;
+import core.util.Const;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class Looper

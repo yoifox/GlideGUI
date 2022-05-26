@@ -57,7 +57,6 @@ public class Scene implements Context
         if(stopped) return;
         if(Float.isInfinite(delta)) delta = 0;
         mouseInput.update();
-        keyInput.update(delta);
         update(delta);
 
         while(!treeModification.isEmpty())
@@ -82,6 +81,8 @@ public class Scene implements Context
         ray.x = camera.x;
         ray.y = camera.y;
         ray.z = camera.z;
+
+        keyInput.update(delta);
 
         if(changeScene != null)
             changeScene.run();

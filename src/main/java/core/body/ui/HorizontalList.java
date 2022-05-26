@@ -1,7 +1,7 @@
 package core.body.ui;
 
 import org.joml.Vector2f;
-import core.utils.Transformation;
+import core.util.Transformation;
 
 import java.util.ArrayList;
 import java.util.List;
