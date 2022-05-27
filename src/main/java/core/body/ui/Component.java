@@ -246,18 +246,18 @@ public class Component extends Body2d
     public float getWidth()
     {
         if(parent instanceof Component component)
-            return isWidthPercentage ? width * component.getWidth() : width;
+            return Math.abs(isWidthPercentage ? width * component.getWidth() : width);
         else
-            return isWidthPercentage ? width * scene.window.getWidth() : width;
+            return Math.abs(isWidthPercentage ? width * scene.window.getWidth() : width);
     }
 
     //Returns height in pixels
     public float getHeight()
     {
         if(parent instanceof Component component)
-            return isHeightPercentage ? height * component.getHeight() : height;
+            return Math.abs(isHeightPercentage ? height * component.getHeight() : height);
         else
-            return isHeightPercentage ? height * scene.window.getHeight() : height;
+            return Math.abs(isHeightPercentage ? height * scene.window.getHeight() : height);
     }
 
     //Returns x in pixels

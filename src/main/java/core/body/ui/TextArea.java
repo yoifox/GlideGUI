@@ -31,18 +31,33 @@ public class TextArea extends Button
 
     private void updateCursorPosition()
     {
-        if(cursorPos == -1)
-        {
-            cursor.setPosition(getX(), getY());
-            return;
-        }
-        TextCharacter lastChar = text.getCharAt(cursorPos);
-        if(lastChar == null) return;
-        if(!lastChar.isCreated())
-        {
-            lastChar.doOnCreate(new Runnable() {
-                @Override
-                public void run() {
+        Runnable r = new Runnable() {
+            @Override
+            public void run() {
+                if(cursorPos == -1)
+                {
+                    cursor.setPosition(getX(), getY());
+                    return;
+                }
+                TextCharacter lastChar = text.getCharAt(cursorPos);
+                if(lastChar == null) return;
+                if(!lastChar.isCreated())
+                {
+                    lastChar.doOnCreate(new Runnable() {
+                        @Override
+                        public void run() {
+                            doNextFrame(new Runnable() {
+                                @Override
+                                public void run() {
+                                    cursor.setPosition(lastChar.getX() + lastChar.getWidth() + 1, lastChar.getY());
+                                    cursor.height = lastChar.getHeight();
+                                }
+                            });
+                        }
+                    });
+                }
+                else
+                {
                     doNextFrame(new Runnable() {
                         @Override
                         public void run() {
@@ -51,17 +66,14 @@ public class TextArea extends Button
                         }
                     });
                 }
-            });
-        }
+            }
+        };
+
+        if(cursor.isCreated())
+            r.run();
         else
         {
-            doNextFrame(new Runnable() {
-                @Override
-                public void run() {
-                    cursor.setPosition(lastChar.getX() + lastChar.getWidth() + 1, lastChar.getY());
-                    cursor.height = lastChar.getHeight();
-                }
-            });
+            cursor.doOnCreate(r);
         }
     }
 
@@ -93,6 +105,12 @@ public class TextArea extends Button
     {
         text.setTextColor(color);
         cursor.setBackground(color);
+    }
+
+    public void setTextDirection(int textDirection)
+    {
+        text.setTextDirection(textDirection);
+        updateCursorPosition();
     }
 
     public String getText()
@@ -164,9 +182,13 @@ public class TextArea extends Button
     {
         super.update(delta);
         Vector2f topLeft = getTopLeftCorner();
-        text.setPosition(topLeft.x, topLeft.y);
+        if(text.getTextDirection() == Text.RIGHT_TO_LEFT)
+            text.setPosition(topLeft.x + getWidth(), topLeft.y);
+        else
+            text.setPosition(topLeft.x, topLeft.y);
         text.isXPercentage = false;
         text.isYPercentage = false;
+
         time += delta;
         if(time > 0.25f)
         {
@@ -220,10 +242,17 @@ public class TextArea extends Button
             {
                 cursorPos = min;
                 updateCursorPosition();
-                return;
             }
-            cursorPos = min - 1;
-            updateCursorPosition();
+            else if(text.getTextDirection() == Text.LEFT_TO_RIGHT)
+            {
+                cursorPos = min - 1;
+                updateCursorPosition();
+            }
+            else
+            {
+                cursorPos = min + 1;
+                updateCursorPosition();
+            }
         }
     }
 
