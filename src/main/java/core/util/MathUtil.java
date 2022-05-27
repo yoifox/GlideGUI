@@ -67,6 +67,19 @@ public class MathUtil
         return (float) Math.sqrt((body2.x - body.x)*(body2.x - body.x) + (body2.y - body.y)*(body2.y - body.y) + (body2.z - body.z)*(body2.z - body.z));
     }
 
+    public static float distance(Component component, Component component2)
+    {
+        Vector2f p1 = component.getTopLeftCorner();
+        Vector2f p2 = component2.getTopLeftCorner();
+        return p1.sub(p2).length();
+    }
+
+    public static float distance(Component component, Vector2f point)
+    {
+        Vector2f p1 = component.getTopLeftCorner();
+        return p1.sub(point).length();
+    }
+
     public static BoundingBox createBoundingBox(float[] vertices)
     {
         return createBoundingBox(vertices, new Matrix4f());

@@ -206,4 +206,19 @@ public class Text extends Layout
         previousLineSpacing = lineSpacing;
         previousFont = font;
     }
+
+    public TextCharacter getCharAt(int index)
+    {
+        int i = 0;
+        for(Map.Entry<String, Body> entry : children.entrySet())
+        {
+            if(entry.getValue() instanceof TextCharacter textCharacter)
+            {
+                if(i == index)
+                    return textCharacter;
+                i++;
+            }
+        }
+        return null;
+    }
 }

@@ -67,25 +67,14 @@ public class Keyboard
         if(actionCallbackCounter > 0.1)
         {
             actionCallbackCounter = 0;
-            if(isKeyPressed(GLFW.GLFW_KEY_ENTER))
+            for(Map.Entry<Integer, Boolean> keys : keyPressedMap.entrySet())
             {
-                for(ActionCallback callback : actionCallbacks)
+                if(keys.getValue())
                 {
-                    callback.onAction(window, ACTION_ENTER);
-                }
-            }
-            if(isKeyPressed(GLFW.GLFW_KEY_SPACE))
-            {
-                for(ActionCallback callback : actionCallbacks)
-                {
-                    callback.onAction(window, ACTION_SPACE);
-                }
-            }
-            if(isKeyPressed(GLFW.GLFW_KEY_BACKSPACE))
-            {
-                for(ActionCallback callback : actionCallbacks)
-                {
-                    callback.onAction(window, ACTION_BACKSPACE);
+                    for(ActionCallback actionCallback : actionCallbacks)
+                    {
+                        actionCallback.onAction(window, keys.getKey());
+                    }
                 }
             }
         }
@@ -127,6 +116,4 @@ public class Keyboard
     {
         void onAction(Window window, int action);
     }
-
-    public static int ACTION_SPACE = 0, ACTION_ENTER = 1, ACTION_BACKSPACE = 2;
 }

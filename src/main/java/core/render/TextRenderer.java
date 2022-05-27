@@ -68,6 +68,7 @@ public class TextRenderer
             textCharacter.margin[Component.MARGIN_LEFT] = info.lsb;
             textCharacter.descent = info.descent;
             textCharacter.initialized = true;
+            textCharacter.onCreate();
             return;
         }
         MemoryStack stack = MemoryStack.stackPush();
@@ -127,6 +128,7 @@ public class TextRenderer
         textCharacter.margin[Component.MARGIN_LEFT] = lsb_ * scale;
 
         textCharacter.initialized = true;
+        textCharacter.onCreate();
         STBTruetype.stbtt_FreeBitmap(bitmap);
 
         stack.pop();

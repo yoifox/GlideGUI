@@ -315,6 +315,67 @@ public class ObjectLoader
         return texture;
     }
 
+    //Single channel textures will always use red channel
+    public Texture loadTextureSingleChannel(String src)
+    {
+        int width, height;
+        ByteBuffer buffer;
+        try(MemoryStack stack = stackPush())
+        {
+            IntBuffer w = stack.mallocInt(1);
+            IntBuffer h = stack.mallocInt(1);
+            IntBuffer c = stack.mallocInt(1);
+
+            buffer = STBImage.stbi_load(src, w, h, c, 1);
+            if(buffer == null)
+                throw new RuntimeException(STBImage.stbi_failure_reason());
+            width = w.get();
+            height = h.get();
+        }
+        int id = GL11.glGenTextures();
+
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, id);
+        GL11.glPixelStorei(GL11.GL_UNPACK_ALIGNMENT,1);
+        GL11.glTexParameterf(GL11.GL_TEXTURE_2D, EXTTextureFilterAnisotropic.GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, 4);
+        GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
+        GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RED, width, height, 0, GL11.GL_RED, GL11.GL_UNSIGNED_BYTE, buffer);
+        GL30.glGenerateMipmap(GL11.GL_TEXTURE_2D);
+
+        Texture texture = new Texture(id, 1, GL11.GL_RED, buffer);
+        textures.add(texture);
+        return texture;
+    }
+
+    public Texture loadTextureSingleChannel(Class<?> cls, String res)
+    {
+        int width, height;
+        ByteBuffer buffer;
+        try(MemoryStack stack = stackPush())
+        {
+            IntBuffer w = stack.mallocInt(1);
+            IntBuffer h = stack.mallocInt(1);
+            IntBuffer c = stack.mallocInt(1);
+
+            buffer = STBImage.stbi_load_from_memory(Util.loadResourceBuffer(cls, res), w, h, c, 1);
+            if(buffer == null)
+                throw new RuntimeException(STBImage.stbi_failure_reason());
+            width = w.get();
+            height = h.get();
+        }
+        int id = GL11.glGenTextures();
+
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, id);
+        GL11.glPixelStorei(GL11.GL_UNPACK_ALIGNMENT,1);
+        GL11.glTexParameterf(GL11.GL_TEXTURE_2D, EXTTextureFilterAnisotropic.GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, 4);
+        GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
+        GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RED, width, height, 0, GL11.GL_RED, GL11.GL_UNSIGNED_BYTE, buffer);
+        GL30.glGenerateMipmap(GL11.GL_TEXTURE_2D);
+
+        Texture texture = new Texture(id, 1, GL11.GL_RED, buffer);
+        textures.add(texture);
+        return texture;
+    }
+
     public Texture loadTexture(Class<?> cls, String res)
     {
         int width, height;
