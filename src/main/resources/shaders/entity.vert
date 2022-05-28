@@ -5,7 +5,7 @@ in vec2 uv;
 in vec3 normal;
 in vec3 tangent;
 
-out vec4 fragPosition;
+out vec3 fragPosition;
 out vec2 fragUv;
 out vec3 fragNormal;
 out vec3 fragTangent;
@@ -28,7 +28,7 @@ void main()
     fragWorldPosition = transformationMatrix * vec4(position, 1.0);
     gl_Position = projectionMatrix * viewMatrix * fragWorldPosition;
     fragUv = uv;
-    fragPosition = gl_Position;
+    fragPosition = position;
     fragNormal = normalize((transformationMatrix * vec4(normal, 0)).xyz);
 
     fragTangent = tangent;

@@ -3,7 +3,7 @@
 struct Material
 {
     vec4 colorValue;
-    vec4 metallicValue;
+    float metallicValue;
     vec4 specularValue;
     int hasColor;
     int hasMetallic;
@@ -36,7 +36,7 @@ struct PointLight
     int isLast;
 };
 
-in vec4 fragPosition;
+in vec3 fragPosition;
 in vec2 fragUv;
 in vec3 fragNormal;
 in vec3 fragTangent;
@@ -52,10 +52,12 @@ uniform sampler2D matMetallic;
 uniform sampler2D matSpecular;
 uniform sampler2D matTransparency;
 uniform sampler2D matNormal;
+uniform samplerCube matReflect;
 uniform DirectionalLight directionalLight;
 uniform PointLight pointLights[32];
 uniform vec4 worldColor;
 uniform DistanceFog distanceFog;
+uniform int hasCubeMap;
 
 out vec4 fragColor;
 
@@ -80,12 +82,14 @@ void main()
         color.w = texture(matTransparency, uv).r;
     else
         color.w = material.transparency;
+
     fragColor = color;
 }
 
 vec4 color()
 {
-    vec4 color, metallic, specular;
+    vec4 color, specular;
+    float metallic;
 
     if(material.hasColor == 1)
         color = texture(matColor, uv);
@@ -93,7 +97,7 @@ vec4 color()
         color = material.colorValue;
 
     if(material.hasMetallic == 1)
-        metallic = texture(matMetallic, uv);
+        metallic = texture(matMetallic, uv).r;
     else
         metallic = material.metallicValue;
 
@@ -113,7 +117,14 @@ vec4 color()
     result += calcDirectionalLight(directionalLight);
 
     vec4 lightColor = (distanceFog.density * distanceFog.color * length(fragViewMatrix * fragWorldPosition)) + (result * color);
-    return color * worldColor * (1 + metallic) + specular + lightColor;
+    color = color * worldColor + specular + lightColor;
+
+    //reflection
+    vec3 cameraDir = vec3(vec4(fragPosition, 1) * fragViewMatrix);
+    if(hasCubeMap == 1)
+        color = vec4(mix(color.xyz, texture(matReflect, fragNormal * cameraDir).xyz, metallic), 1);
+
+    return color;
 }
 
 vec4 calcDirectionalLight(DirectionalLight directionalLight)

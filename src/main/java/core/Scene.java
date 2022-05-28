@@ -144,7 +144,7 @@ public class Scene implements Context
             entityRenderer.render(entity, camera, worldColor, previousPointLights, previousSpotLights, directionalLight, distanceFog);
             if(entity.mesh.boundingBox.visible)
             {
-                Entity bbCube = new Entity(cubeMesh, new Material(new ColorValue(1, 0, 0, 1), null, null, 0.2f));
+                Entity bbCube = new Entity(cubeMesh, new Material(new ColorValue(1, 0, 0, 1), 0, null, 0.2f));
                 bbCube.setPosition(entity.x, entity.y, entity.z);
                 BoundingBox boundingBox = entity.getBoundingBox();
                 bbCube.setScale(boundingBox.width / 2f + 0.05f, boundingBox.height / 2f + 0.05f, boundingBox.depth / 2f + 0.05f);

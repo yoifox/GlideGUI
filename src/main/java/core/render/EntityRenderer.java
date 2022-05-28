@@ -43,6 +43,8 @@ public class EntityRenderer
         shader.createUniform("matSpecular");
         shader.createUniform("matTransparency");
         shader.createUniform("matNormal");
+        shader.createUniform("matReflect");
+        shader.createUniform("hasCubeMap");
 
         createDistanceFogUniform(shader);
         createMaterialUniform(shader);
@@ -71,6 +73,8 @@ public class EntityRenderer
         shader.setUniform("matSpecular", 2);
         shader.setUniform("matTransparency", 3);
         shader.setUniform("matNormal", 4);
+        shader.setUniform("matReflect", 5);
+        shader.setUniform("hasCubeMap", scene.skyBox == null ? 0 : 1);
 
         setMaterialUniform(shader, entity.material);
         setPointLightsUniform(shader, pointLights);
@@ -213,6 +217,12 @@ public class EntityRenderer
             else
                 GL11.glBindTexture(GL11.GL_TEXTURE_2D, entity.material.normal.getId());
         }
+
+        if(scene.skyBox != null)
+        {
+            GL13.glActiveTexture(GL13.GL_TEXTURE5);
+            GL11.glBindTexture(GL13.GL_TEXTURE_CUBE_MAP, scene.skyBox.id);
+        }
     }
 
     private void unbind()
@@ -258,7 +268,7 @@ public class EntityRenderer
     public static void setMaterialUniform(Shader shader, Material material)
     {
         shader.setUniform("material.colorValue", material.colorValue.vec4());
-        shader.setUniform("material.metallicValue", material.metallicValue.vec4());
+        shader.setUniform("material.metallicValue", material.metallicValue);
         shader.setUniform("material.specularValue", material.specularValue.vec4());
         shader.setUniform("material.hasColor", material.color == null ? 0 : 1);
         shader.setUniform("material.hasMetallic", material.metallic == null ? 0 : 1);

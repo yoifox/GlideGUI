@@ -9,7 +9,7 @@ public class Material
     public Texture transparency;
 
     public ColorValue colorValue = new ColorValue(1, 1, 1, 1);
-    public ColorValue metallicValue = new ColorValue(0, 0, 0, 1);
+    public float metallicValue = 0;
     public ColorValue specularValue = new ColorValue(0, 0, 0, 1);
     public float transparencyValue = 1;
 
@@ -30,10 +30,10 @@ public class Material
         this.color = color;
     }
 
-    public Material(ColorValue colorValue, ColorValue metallicValue, ColorValue specularP, float transparencyP)
+    public Material(ColorValue colorValue, float metallicValue, ColorValue specularP, float transparencyP)
     {
         this.colorValue = colorValue == null ? this.colorValue : colorValue;
-        this.metallicValue = metallicValue == null ? this.metallicValue : metallicValue;
+        this.metallicValue = metallicValue;
         this.specularValue = specularP == null ? this.specularValue : specularP;
         this.transparencyValue = transparencyP;
     }

@@ -34,13 +34,16 @@ public class ModelLoader
         }
 
         AIVector3D.Buffer uvsBuff = mesh.mTextureCoords(0);
-        assert uvsBuff != null;
-        float[] uvs = new float[uvsBuff.limit() * 2];
-        for(int i = 0, j = 0; i < uvsBuff.limit(); i++)
+        float[] uvs = new float[1];
+        if(uvsBuff != null)
         {
-            AIVector3D vector = uvsBuff.get(i);
-            uvs[j++] = vector.x();
-            uvs[j++] = 1 - vector.y();
+            uvs = new float[uvsBuff.limit() * 2];
+            for(int i = 0, j = 0; i < uvsBuff.limit(); i++)
+            {
+                AIVector3D vector = uvsBuff.get(i);
+                uvs[j++] = vector.x();
+                uvs[j++] = 1 - vector.y();
+            }
         }
 
         AIVector3D.Buffer normalsBuffer = mesh.mNormals();
@@ -108,13 +111,16 @@ public class ModelLoader
         }
 
         AIVector3D.Buffer uvsBuff = mesh.mTextureCoords(0);
-        assert uvsBuff != null;
-        float[] uvs = new float[uvsBuff.limit() * 2];
-        for(int i = 0, j = 0; i < uvsBuff.limit(); i++)
+        float[] uvs = new float[1];
+        if(uvsBuff != null)
         {
-            AIVector3D vector = uvsBuff.get(i);
-            uvs[j++] = vector.x();
-            uvs[j++] = 1 - vector.y();
+            uvs = new float[uvsBuff.limit() * 2];
+            for(int i = 0, j = 0; i < uvsBuff.limit(); i++)
+            {
+                AIVector3D vector = uvsBuff.get(i);
+                uvs[j++] = vector.x();
+                uvs[j++] = 1 - vector.y();
+            }
         }
 
         AIVector3D.Buffer normalsBuffer = mesh.mNormals();
