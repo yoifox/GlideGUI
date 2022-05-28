@@ -15,7 +15,7 @@ public class Text extends Layout
     private ColorValue textColor = ColorValue.COLOR_BLACK;
     private int lineSpacing = 12;
     private int textDirection = LEFT_TO_RIGHT;
-    public static int LEFT_TO_RIGHT = 0, RIGHT_TO_LEFT = 1;
+    public static int LEFT_TO_RIGHT = 0, RIGHT_TO_LEFT = 1, CENTER = 2;
     Font font;
 
     private String previousText;
@@ -153,7 +153,7 @@ public class Text extends Layout
         {
             if(entry.getValue() instanceof TextCharacter textCharacter)
             {
-                if(textDirection == LEFT_TO_RIGHT)
+                if(textDirection == LEFT_TO_RIGHT || textDirection == CENTER)
                     posX += textCharacter.margin[MARGIN_LEFT];
                 else
                     posX -= (textCharacter.width + textCharacter.margin[Component.MARGIN_RIGHT]);
@@ -161,7 +161,7 @@ public class Text extends Layout
                 textCharacter.x = posX;
                 textCharacter.y = posY + textCharacter.descent;
 
-                if(textDirection == LEFT_TO_RIGHT)
+                if(textDirection == LEFT_TO_RIGHT || textDirection == CENTER)
                     posX += textCharacter.width + textCharacter.margin[Component.MARGIN_RIGHT];
                 else
                     posX -= textCharacter.margin[MARGIN_LEFT];

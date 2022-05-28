@@ -2,16 +2,17 @@
 
 in vec2 position;
 in vec2 uv;
-in vec2 imgUv;
 
 out vec2 fragUv;
 out vec2 fragImgUv;
 
 uniform mat4 transformationMatrix;
+uniform vec2 uvsPos;
+uniform vec2 uvsMul;
 
 void main()
 {
     gl_Position = transformationMatrix * vec4(position, 0.0, 1.0);
     fragUv = uv;
-    fragImgUv = imgUv;
+    fragImgUv = uvsMul * uv + uvsPos;
 }

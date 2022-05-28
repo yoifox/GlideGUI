@@ -15,8 +15,7 @@ public class Component extends Body2d
     public boolean isXPercentage = false;
     public boolean isYPercentage = false;
     public float[] margin = new float[] {0, 0, 0, 0}; //only pixels
-    public float[] uvs = new float[] {0, 0, 0, 1, 1, 0, 1, 1};
-    public boolean[] isUvPercentage = new boolean[] {true, true, true, true, true, true, true, true};
+    public float[] uvs = new float[] {0, 0, 0, 1, 1, 0, 1, 1}; //only percentage of an image
     public int origin = ORIGIN_TOP_LEFT;
     public Color bc;
     public boolean visibleOutsideParentBounds = false;
@@ -242,6 +241,83 @@ public class Component extends Body2d
         return this;
     }
 
+    public Component position(String x, String y)
+    {
+        if(x.matches("(\\d*\\.)?\\d+%"))
+        {
+            float xPos = Float.parseFloat(x.replace("%", ""));
+            isXPercentage = true;
+            this.x = xPos / 100f;
+        }
+        else if(x.matches("(\\d*\\.)?\\d+"))
+        {
+            float xPos = Float.parseFloat(x);
+            isXPercentage = false;
+            this.x = xPos;
+        }
+        else if(!x.equals(""))
+        {
+            throw new RuntimeException(x + " isn't a valid position value.");
+        }
+
+        if(y.matches("(\\d*\\.)?\\d+%"))
+        {
+            float yPos = Float.parseFloat(y.replace("%", ""));
+            isYPercentage = true;
+            this.y = yPos / 100f;
+        }
+        else if(y.matches("(\\d*\\.)?\\d+"))
+        {
+            float yPos = Float.parseFloat(y);
+            isYPercentage = false;
+            this.y = yPos;
+        }
+        else if(!y.equals(""))
+        {
+            throw new RuntimeException(y + " isn't a valid position value.");
+        }
+
+        return this;
+    }
+
+    public Component setDimensions(String width, String height)
+    {
+        if(width.matches("(\\d*\\.)?\\d+%"))
+        {
+            float newWidth = Float.parseFloat(width.replace("%", ""));
+            isWidthPercentage = true;
+            this.width = newWidth / 100f;
+        }
+        else if(width.matches("(\\d*\\.)?\\d+"))
+        {
+            float newWidth = Float.parseFloat(width);
+            isWidthPercentage = false;
+            this.width = newWidth;
+        }
+        else if(!width.equals(""))
+        {
+            throw new RuntimeException(width + " isn't a valid dimension value.");
+        }
+
+        if(height.matches("(\\d*\\.)?\\d+%"))
+        {
+            float newHeight = Float.parseFloat(height.replace("%", ""));
+            isHeightPercentage = true;
+            this.height = newHeight / 100f;
+        }
+        else if(height.matches("(\\d*\\.)?\\d+"))
+        {
+            float newHeight = Float.parseFloat(height);
+            isHeightPercentage = false;
+            this.height = newHeight;
+        }
+        else if(!height.equals(""))
+        {
+            throw new RuntimeException(height + " isn't a valid dimension value.");
+        }
+        return this;
+    }
+
     //Returns width in pixels
     public float getWidth()
     {
@@ -292,14 +368,7 @@ public class Component extends Body2d
     //returns pixel value of uvs
     public float[] getUvs()
     {
-        return new float[] {isUvPercentage[0] ? uvs[0] * getWidth() : uvs[0],
-                            isUvPercentage[1] ? uvs[1] * getHeight() : uvs[1],
-                            isUvPercentage[2] ? uvs[2] * getWidth() : uvs[2],
-                            isUvPercentage[3] ? uvs[3] * getHeight() : uvs[3],
-                            isUvPercentage[4] ? uvs[4] * getWidth() : uvs[4],
-                            isUvPercentage[5] ? uvs[5] * getHeight() : uvs[5],
-                            isUvPercentage[6] ? uvs[6] * getWidth() : uvs[6],
-                            isUvPercentage[7] ? uvs[7] * getHeight() : uvs[7]};
+        return uvs;
     }
 
     public Vector2f getTopLeftCorner()

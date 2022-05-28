@@ -127,7 +127,7 @@ public class Transformation
                 ((-origin.y * 2 + window.getHeight()) / window.getHeight()), 0f);
 
         matrix.identity().translate(pos).rotateZ((float) Math.toRadians(component.rotation)).
-            scaleXY(component.scaleX / window.getWidth(), component.scaleY / window.getHeight());
+            scaleXY(component.scaleX * (width / window.getWidth()), component.scaleY * (height / window.getHeight()));
 
         return matrix;
     }

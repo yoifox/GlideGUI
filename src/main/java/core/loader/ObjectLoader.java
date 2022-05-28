@@ -1,5 +1,6 @@
 package core.loader;
 
+import core.body.*;
 import core.err.FileNotFoundException;
 import core.err.UnsupportedFileFormatException;
 import org.lwjgl.openal.AL10;
@@ -12,10 +13,6 @@ import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
 import org.lwjgl.system.libc.LibCStdlib;
 import core.Scene;
-import core.body.BoundingBox;
-import core.body.Mesh;
-import core.body.Sound;
-import core.body.Texture;
 import core.body.ui.Font;
 import core.util.Util;
 
@@ -34,6 +31,7 @@ public class ObjectLoader
     private final List<Integer> vbos = new ArrayList<>();
     private final List<Texture> textures = new ArrayList<>();
     private final List<Sound> sounds = new ArrayList<>();
+    private final List<CubeMap> cubeMaps = new ArrayList<>();
     private Scene context;
 
     public ObjectLoader(Scene context) {
@@ -76,10 +74,8 @@ public class ObjectLoader
     }
 
     //ObjectLoader will not delete buffers for quads. make sure to delete them in the renderer.
-    public static Mesh createQuad(float[] vertices, float[] imgUvs)
+    public static Mesh createQuad(float[] vertices, float[] uvs)
     {
-        float[] uvs = new float[] {0, 0, 0, 1, 1, 0, 1, 1};
-
         int vao = GL30.glGenVertexArrays();
         GL30.glBindVertexArray(vao);
 
@@ -99,16 +95,8 @@ public class ObjectLoader
         GL20.glVertexAttribPointer(1, 2, GL11.GL_FLOAT, false, 0, 0);
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
 
-        int vbo2 = GL15.glGenBuffers();
-        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vbo1);
-        buffer = MemoryUtil.memAllocFloat(uvs.length);
-        buffer.put(imgUvs).flip();
-        GL15.glBufferData(GL15.GL_ARRAY_BUFFER, buffer, GL15.GL_STATIC_DRAW);
-        GL20.glVertexAttribPointer(2, 2, GL11.GL_FLOAT, false, 0, 0);
-        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
-
         GL30.glBindVertexArray(0);
-        return new Mesh(vao, new int[]{vbo, vbo1, vbo2}, vertices.length / 2);
+        return new Mesh(vao, new int[]{vbo, vbo1}, vertices.length / 2);
     }
 
     private int storeIndicesBuffer(int[] indices)
@@ -156,12 +144,17 @@ public class ObjectLoader
             AL10.alDeleteBuffers(sound.getBufferId());
             AL10.alDeleteSources(sound.getSourceId());
         }
+        for(CubeMap cubeMap : cubeMaps)
+        {
+            GL30.glDeleteTextures(cubeMap.id);
+        }
 
         vaos.clear();
         vbos.clear();
         textures.clear();
         fonts.clear();
         sounds.clear();
+        cubeMaps.clear();
     }
 
     public void free(Texture texture)
@@ -186,6 +179,12 @@ public class ObjectLoader
         sounds.remove(sound);
         AL10.alDeleteBuffers(sound.getBufferId());
         AL10.alDeleteSources(sound.getSourceId());
+    }
+
+    public void free(CubeMap cubeMap)
+    {
+        cubeMaps.remove(cubeMap);
+        GL30.glDeleteTextures(cubeMap.id);
     }
 
     private void unbind() { GL30.glBindVertexArray(0); }
@@ -262,6 +261,7 @@ public class ObjectLoader
             w[0] = width.get();
             h[0] = height.get();
             c[0] = channels.get();
+
         }
         return buffer;
     }
@@ -374,6 +374,31 @@ public class ObjectLoader
         Texture texture = new Texture(id, 1, GL11.GL_RED, buffer);
         textures.add(texture);
         return texture;
+    }
+
+    public CubeMap loadCubeMap(String right, String left, String top, String bottom, String back, String front)
+    {
+        String[] res = new String[] {right, left, top, bottom, back, front};
+        int id = GL11.glGenTextures();
+        GL13.glActiveTexture(GL13.GL_TEXTURE0);
+        GL11.glBindTexture(GL13.GL_TEXTURE_CUBE_MAP, id);
+        for(int i = 0; i < res.length; i++)
+        {
+            int[] w = new int[1];
+            int[] h = new int[1];
+            int[] c = new int[1];
+            ByteBuffer buffer = loadTextureBuffer(res[i], w, h, c);
+            GL11.glTexImage2D(GL13.GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL11.GL_RGBA, w[0], h[0], 0,
+                    GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, buffer);
+            GL11.glTexParameteri(GL13.GL_TEXTURE_CUBE_MAP, GL11.GL_TEXTURE_WRAP_S, GL12.GL_CLAMP_TO_EDGE);
+            GL11.glTexParameteri(GL13.GL_TEXTURE_CUBE_MAP, GL11.GL_TEXTURE_WRAP_T, GL12.GL_CLAMP_TO_EDGE);
+            STBImage.stbi_image_free(buffer);
+        }
+        GL11.glTexParameterf(GL13.GL_TEXTURE_CUBE_MAP, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
+        GL11.glTexParameterf(GL13.GL_TEXTURE_CUBE_MAP, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
+        CubeMap cubeMap = new CubeMap(id);
+        cubeMaps.add(cubeMap);
+        return cubeMap;
     }
 
     public Texture loadTexture(Class<?> cls, String res)

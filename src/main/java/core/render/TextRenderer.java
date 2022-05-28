@@ -1,5 +1,6 @@
 package core.render;
 
+import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.lwjgl.opengl.*;
 import org.lwjgl.stb.STBImageWrite;
@@ -29,20 +30,20 @@ public class TextRenderer
     Scene scene;
     Shader shader;
     Mesh quad;
-    private static ObjectLoader objectLoader;
-    //private Map<TextCharacter, Texture> textCharacterBitmapMap = new HashMap<>();
-    private Map<String, TextureInfo> textCharacterStringBitmapMap = new HashMap<>();
+    private final Map<String, TextureInfo> textCharacterStringBitmapMap = new HashMap<>();
 
     public void init(Scene scene)
     {
         this.scene = scene;
-        objectLoader = new ObjectLoader(scene);
+        ObjectLoader objectLoader = new ObjectLoader(scene);
         this.window = scene.window;
         shader = new Shader(Util.loadResourceString(getClass(), "/shaders/ui_component.vert"),
                 Util.loadResourceString(getClass(), "/shaders/ui_component.frag"));
         shader.link();
         shader.createUniform("transformationMatrix");
         shader.createUniform("componentSize");
+        shader.createUniform("uvsMul");
+        shader.createUniform("uvsPos");
         GuiRenderer.createColorUniform(shader);
         GuiRenderer.createBoundingUniform(shader);
         GuiRenderer.createDimensionsUniform(shader);
@@ -141,6 +142,8 @@ public class TextRenderer
 
         shader.bind();
         shader.setUniform("transformationMatrix", Transformation.createTransformationMatrix(textCharacter, window));
+        shader.setUniform("uvsMul", new Vector2f(1, 1));
+        shader.setUniform("uvsPos", new Vector2f());
         shader.setUniform("componentSize", new Vector2f(textCharacter.isWidthPercentage ? textCharacter.width * window.getWidth() : textCharacter.width,
                 textCharacter.isHeightPercentage ? textCharacter.height * window.getHeight() : textCharacter.height));
 
@@ -178,12 +181,8 @@ public class TextRenderer
 
         shader.unbind();
 
-        if(textCharacter.bc.texture != null)
-        {
-            GL13.glActiveTexture(0);
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
-        }
-
+        GL13.glActiveTexture(0);
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
     }
 
     private static Texture loadTexture(ByteBuffer buffer, int width, int height)

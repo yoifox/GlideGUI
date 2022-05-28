@@ -13,8 +13,8 @@ import core.body.ui.Component;
 public class Window
 {
     private static final float FOV = (float) Math.toRadians(60);
-    private static final float Z_NEAR = 0.001f;
-    private static final float Z_FAR = 10000f;
+    private static float zNear = 1f;
+    private static float zFar = 10000f;
 
     protected boolean shouldClose, isResized, fullScreen;
     protected int width, height, x, y;
@@ -75,7 +75,7 @@ public class Window
             this.width = width;
             this.height = height;
             float aspectRatio = ((float)width / (float)height);
-            projectionMatrix = projectionMatrix.setPerspective(FOV, aspectRatio, Z_NEAR, Z_FAR);
+            projectionMatrix = projectionMatrix.setPerspective(FOV, aspectRatio, zNear, zFar);
             isResized = true;
         });
 
@@ -91,7 +91,7 @@ public class Window
                 (vidMode.height() - height) / 2);
         GLFW.glfwMakeContextCurrent(windowId);
         Looper.currentContext = windowId;
-        GLFW.glfwSwapInterval(1); //vSync
+        GLFW.glfwSwapInterval(1);
         GLFW.glfwShowWindow(windowId);
         GL.createCapabilities();
 
@@ -112,7 +112,7 @@ public class Window
 
     public Matrix4f getProjectionMatrix() {
         float aspectRatio = ((float)width / (float)height);
-        projectionMatrix = projectionMatrix.setPerspective(FOV, aspectRatio, Z_NEAR, Z_FAR);
+        projectionMatrix = projectionMatrix.setPerspective(FOV, aspectRatio, zNear, zFar);
         return projectionMatrix;
     }
 
@@ -249,6 +249,24 @@ public class Window
 
     public int getHeight() {
         return height;
+    }
+
+    public float getzFar() {
+        return zFar;
+    }
+
+    public float getzNear() {
+        return zNear;
+    }
+
+    public void setZNear(float zNear) {
+        Window.zNear = zNear;
+        getProjectionMatrix();
+    }
+
+    public void setZFar(float zFar) {
+        Window.zFar = zFar;
+        getProjectionMatrix();
     }
 
     public Component component()

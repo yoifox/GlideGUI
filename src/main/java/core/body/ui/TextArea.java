@@ -77,40 +77,46 @@ public class TextArea extends Button
         }
     }
 
-    public void setTextSize(int textSize)
+    public TextArea setTextSize(int textSize)
     {
         text.setTextSize(textSize);
         updateCursorPosition();
+        return this;
     }
 
-    public void setFont(Font font)
+    public TextArea setFont(Font font)
     {
         text.setFont(font);
         updateCursorPosition();
+        return this;
     }
 
-    public void setText(String text)
+    public TextArea setText(String text)
     {
         this.text.setText(text);
         updateCursorPosition();
+        return this;
     }
 
-    public void append(String text)
+    public TextArea append(String text)
     {
         this.text.append(text);
         updateCursorPosition();
+        return this;
     }
 
-    public void setTextColor(ColorValue color)
+    public TextArea setTextColor(ColorValue color)
     {
         text.setTextColor(color);
         cursor.setBackground(color);
+        return this;
     }
 
-    public void setTextDirection(int textDirection)
+    public TextArea setTextDirection(int textDirection)
     {
         text.setTextDirection(textDirection);
         updateCursorPosition();
+        return this;
     }
 
     public String getText()
@@ -174,6 +180,7 @@ public class TextArea extends Button
                 isFocused = true;
             }
         };
+        updateCursorPosition();
     }
 
     float time = 0;
@@ -182,12 +189,14 @@ public class TextArea extends Button
     {
         super.update(delta);
         Vector2f topLeft = getTopLeftCorner();
-        if(text.getTextDirection() == Text.RIGHT_TO_LEFT)
-            text.setPosition(topLeft.x + getWidth(), topLeft.y);
-        else
-            text.setPosition(topLeft.x, topLeft.y);
         text.isXPercentage = false;
         text.isYPercentage = false;
+        if(text.getTextDirection() == Text.RIGHT_TO_LEFT)
+            text.setPosition(topLeft.x + getWidth(), topLeft.y);
+        else if(text.getTextDirection() == Text.LEFT_TO_RIGHT)
+            text.setPosition(topLeft.x, topLeft.y);
+        else if(text.getTextDirection() == Text.CENTER)
+            text.center();
 
         time += delta;
         if(time > 0.25f)

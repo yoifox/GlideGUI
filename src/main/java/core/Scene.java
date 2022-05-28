@@ -39,11 +39,13 @@ public class Scene implements Context
     protected TextRenderer textRenderer;
     protected TerrainRenderer terrainRenderer;
     protected FXAARenderer fxaaRenderer;
+    protected SkyboxRenderer skyboxRenderer;
     public boolean stopped = false;
     public Texture grad, boxShadow;
     public RigidBody3d ray;
     public RayCast rayCast;
     public Mesh cubeMesh;
+    public CubeMap skyBox;
 
     private final List<Runnable> treeModification = new ArrayList<>();
     private Runnable changeScene;
@@ -65,6 +67,8 @@ public class Scene implements Context
             treeModification.remove(0);
         }
 
+        if(skyBox != null)
+            skyboxRenderer.render(camera, skyBox);
         for(Map.Entry<String, Body> entry : bodies.entrySet())
         {
             if(stopped) return;
@@ -123,7 +127,6 @@ public class Scene implements Context
         {
             body.update(delta);
         }
-
         if(body instanceof Component component)
         {
             if(component.gradComp != null)
@@ -259,6 +262,7 @@ public class Scene implements Context
         textRenderer = new TextRenderer();
         terrainRenderer = new TerrainRenderer();
         fxaaRenderer = new FXAARenderer();
+        skyboxRenderer = new SkyboxRenderer();
         entityRenderer.init(this);
         guiRenderer.init(this);
         textRenderer.init(this);
@@ -271,6 +275,7 @@ public class Scene implements Context
         boxShadow = objectLoader.loadTexture(getClass(), "/img/boxShadowV2.png");
         directionalLight = new DirectionalLight(20, 20, 20, 1, ColorValue.COLOR_WHITE);
         cubeMesh = objectLoader.loadMesh(getClass(), "/shapes/cube.fbx");
+        skyboxRenderer.init(this);
 
         CollisionShape3d rayCollision = new CollisionShape3d(0);
         rayCollision.masks.add("default");

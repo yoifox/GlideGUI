@@ -59,6 +59,16 @@ public class Button extends Component
         return this;
     }
 
+    public Button setOnClickListener(OnClickListener onClickListener) {
+        this.onClickListener = onClickListener;
+        return this;
+    }
+
+    public Button setOnHoverListener(OnHoverListener onHoverListener) {
+        this.onHoverListener = onHoverListener;
+        return this;
+    }
+
     @Override
     public void update(float delta)
     {

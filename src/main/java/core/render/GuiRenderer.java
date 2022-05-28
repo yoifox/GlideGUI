@@ -2,8 +2,7 @@ package core.render;
 
 import core.Looper;
 import core.body.AnimatedTexture;
-import org.joml.Vector2f;
-import org.joml.Vector4f;
+import org.joml.*;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL20;
@@ -20,11 +19,14 @@ import core.loader.ObjectLoader;
 import core.util.Transformation;
 import core.util.Util;
 
+import java.lang.Math;
+
 public class GuiRenderer
 {
     private Shader shader;
     private Window window;
     private Scene scene;
+    private Mesh quad;
     public void init(Scene scene)
     {
         this.scene = scene;
@@ -36,10 +38,15 @@ public class GuiRenderer
         shader.createUniform("componentSize");
         shader.createUniform("isGradComp");
         shader.createUniform("gradCompColor");
+        shader.createUniform("uvsMul");
+        shader.createUniform("uvsPos");
         createColorUniform(shader);
         createBoundingUniform(shader);
         createDimensionsUniform(shader);
         createTextUniform(shader);
+
+        float[] vertices = {-1, 1, -1, -1, 1, 1, 1, -1};
+        quad = ObjectLoader.createQuad(vertices, new float[] {0, 0, 0, 1, 1, 0, 1, 1});
     }
 
     float animTime = 0;
@@ -48,23 +55,17 @@ public class GuiRenderer
         if(scene.stopped) return;
         if(!component.visible) return;
 
-        float[] vertices = {-component.getWidth(),
-                component.getHeight(),
-                -component.getWidth(),
-                -component.getHeight(),
-                component.getWidth(),
-                component.getHeight(),
-                component.getWidth(),
-                -component.getHeight()
-        };
+        float[] cUvs = component.getUvs();
 
-        float[] uvsPx = component.getUvs();
-        Mesh quad = ObjectLoader.createQuad(vertices, new float[]{uvsPx[0] / component.getWidth(), uvsPx[1] / component.getHeight(),
-                                                                uvsPx[2] / component.getWidth(), uvsPx[3] / component.getHeight(),
-                                                                uvsPx[4] / component.getWidth(), uvsPx[5] / component.getHeight(),
-                                                                uvsPx[6] / component.getWidth(), uvsPx[7] / component.getHeight()});
+        Vector2f uvsPos = new Vector2f((cUvs[Component.UV_TOP_LEFT_U]), (cUvs[Component.UV_TOP_LEFT_V]));
+        float mulX = cUvs[Component.UV_TOP_RIGHT_U] - cUvs[Component.UV_TOP_LEFT_U];
+        float mulY = cUvs[Component.UV_BOTTOM_LEFT_V] - cUvs[Component.UV_TOP_LEFT_V];
+        Vector2f uvsMul = new Vector2f(mulX, mulY);
+
         shader.bind();
         shader.setUniform("transformationMatrix", Transformation.createTransformationMatrix(component, window));
+        shader.setUniform("uvsMul", uvsMul);
+        shader.setUniform("uvsPos", uvsPos);
         shader.setUniform("isGradComp", component.isGradComp ? 1 : 0);
         shader.setUniform("gradCompColor", component.gradCompColor != null ? component.gradCompColor.vec4() : ColorValue.COLOR_WHITE.vec4());
         shader.setUniform("componentSize", new Vector2f(component.isWidthPercentage ? component.width * window.getWidth() : component.width,
@@ -78,7 +79,6 @@ public class GuiRenderer
         GL30.glBindVertexArray(quad.getVao());
         GL20.glEnableVertexAttribArray(0);
         GL20.glEnableVertexAttribArray(1);
-        GL20.glEnableVertexAttribArray(2);
 
         if(component.bc.texture != null)
         {
@@ -113,26 +113,21 @@ public class GuiRenderer
 
         GL20.glDisableVertexAttribArray(0);
         GL20.glDisableVertexAttribArray(1);
-        GL20.glDisableVertexAttribArray(2);
         GL30.glBindVertexArray(0);
 
         shader.unbind();
 
-        GL30.glDeleteVertexArrays(quad.getVao());
-        if(quad.getVbos() != null)
-            for(int vbo : quad.getVbos())
-                GL30.glDeleteBuffers(vbo);
-
-        if(component.bc.texture != null)
-        {
-            GL13.glActiveTexture(0);
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
-        }
+        GL13.glActiveTexture(0);
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
     }
 
     public void cleanup()
     {
         shader.cleanup();
+        GL30.glDeleteVertexArrays(quad.getVao());
+        if(quad.getVbos() != null)
+            for(int vbo : quad.getVbos())
+                GL30.glDeleteBuffers(vbo);
     }
 
     public static void createDimensionsUniform(Shader shader)

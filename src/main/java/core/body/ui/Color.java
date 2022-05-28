@@ -13,6 +13,8 @@ public class Color
     public static final Color COLOR_BLUE = new Color(0, 0, 1, 1);
     public static final Color COLOR_YELLOW = new Color(1, 1, 0, 1);
     public static final Color COLOR_PURPLE = new Color(1, 0, 1, 1);
+    public static final Color COLOR_GRAY = new Color(0.5f, 0.5f, 0.5f, 1);
+    public static final Color COLOR_LIGHT_GRAY = new Color(0.8f, 0.8f, 0.8f, 1);
 
     public Texture texture;
     public ColorValue color = new ColorValue(0, 0, 0, 0);

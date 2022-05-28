@@ -2,6 +2,7 @@ package core.render;
 
 import core.Looper;
 import core.body.*;
+import core.util.MathUtil;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
@@ -56,6 +57,8 @@ public class EntityRenderer
     {
         if(scene.stopped) return;
         if(!entity.visible) return;
+        if(MathUtil.distance(entity, camera) > window.getzFar())
+            return;
 
         shader.bind();
         shader.setUniform("projectionMatrix", window.getProjectionMatrix());

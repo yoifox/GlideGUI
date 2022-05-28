@@ -13,6 +13,8 @@ public class ColorValue
     public static final ColorValue COLOR_BLUE = new ColorValue(0, 0, 1, 1);
     public static final ColorValue COLOR_YELLOW = new ColorValue(1, 1, 0, 1);
     public static final ColorValue COLOR_PURPLE = new ColorValue(1, 0, 1, 1);
+    public static final ColorValue COLOR_GRAY = new ColorValue(0.5f, 0.5f, 0.5f, 1);
+    public static final ColorValue COLOR_LIGHT_GRAY = new ColorValue(0.8f, 0.8f, 0.8f, 1);
 
     private final Vector4f color = new Vector4f();
 
