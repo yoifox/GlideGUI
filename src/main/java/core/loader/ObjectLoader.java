@@ -401,6 +401,31 @@ public class ObjectLoader
         return cubeMap;
     }
 
+    public CubeMap loadCubeMap(Class<?> cls, String right, String left, String top, String bottom, String back, String front)
+    {
+        String[] res = new String[] {right, left, top, bottom, back, front};
+        int id = GL11.glGenTextures();
+        GL13.glActiveTexture(GL13.GL_TEXTURE0);
+        GL11.glBindTexture(GL13.GL_TEXTURE_CUBE_MAP, id);
+        for(int i = 0; i < res.length; i++)
+        {
+            int[] w = new int[1];
+            int[] h = new int[1];
+            int[] c = new int[1];
+            ByteBuffer buffer = loadTextureBuffer(cls, res[i], w, h, c);
+            GL11.glTexImage2D(GL13.GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL11.GL_RGBA, w[0], h[0], 0,
+                    GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, buffer);
+            GL11.glTexParameteri(GL13.GL_TEXTURE_CUBE_MAP, GL11.GL_TEXTURE_WRAP_S, GL12.GL_CLAMP_TO_EDGE);
+            GL11.glTexParameteri(GL13.GL_TEXTURE_CUBE_MAP, GL11.GL_TEXTURE_WRAP_T, GL12.GL_CLAMP_TO_EDGE);
+            STBImage.stbi_image_free(buffer);
+        }
+        GL11.glTexParameterf(GL13.GL_TEXTURE_CUBE_MAP, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
+        GL11.glTexParameterf(GL13.GL_TEXTURE_CUBE_MAP, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
+        CubeMap cubeMap = new CubeMap(id);
+        cubeMaps.add(cubeMap);
+        return cubeMap;
+    }
+
     public Texture loadTexture(Class<?> cls, String res)
     {
         int width, height;
