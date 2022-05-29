@@ -34,6 +34,7 @@ public class GuiRenderer
         shader = new Shader(Util.loadResourceString(getClass(), "/shaders/ui_component.vert"),
                 Util.loadResourceString(getClass(), "/shaders/ui_component.frag"));
         shader.link();
+        shader.validate();
         shader.createUniform("transformationMatrix");
         shader.createUniform("componentSize");
         shader.createUniform("isGradComp");

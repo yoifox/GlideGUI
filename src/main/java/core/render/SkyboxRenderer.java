@@ -30,6 +30,7 @@ public class SkyboxRenderer
         shader.createUniform("viewMatrix");
         shader.createUniform("size");
         shader.link();
+        shader.validate();
     }
 
     public void render(Camera camera, CubeMap cubeMap)

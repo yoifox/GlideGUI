@@ -46,6 +46,15 @@ public class EntityRenderer
         shader.createUniform("matReflect");
         shader.createUniform("hasCubeMap");
 
+        shader.setUniform("matColor", 0);
+        shader.setUniform("matMetallic", 1);
+        shader.setUniform("matSpecular", 2);
+        shader.setUniform("matTransparency", 3);
+        shader.setUniform("matNormal", 4);
+        shader.setUniform("matReflect", 5);
+
+        shader.validate();
+
         createDistanceFogUniform(shader);
         createMaterialUniform(shader);
         createPointLightsUniform(shader, 32);
@@ -67,13 +76,6 @@ public class EntityRenderer
         shader.setUniform("transformationMatrix", Transformation.createTransformationMatrix(entity));
         shader.setUniform("viewMatrix", Transformation.createViewMatrix(camera));
         shader.setUniform("worldColor", worldColor);
-
-        shader.setUniform("matColor", 0);
-        shader.setUniform("matMetallic", 1);
-        shader.setUniform("matSpecular", 2);
-        shader.setUniform("matTransparency", 3);
-        shader.setUniform("matNormal", 4);
-        shader.setUniform("matReflect", 5);
         shader.setUniform("hasCubeMap", scene.skyBox == null ? 0 : 1);
 
         setMaterialUniform(shader, entity.material);

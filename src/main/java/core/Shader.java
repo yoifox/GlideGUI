@@ -23,7 +23,6 @@ public class Shader
     private int fragmentId;
 
     private final Map<String, Integer> uniforms = new HashMap<>();
-    //private final Set<Uniform> uniformSet = new HashSet<>();
 
     public Shader(String vertexCode, String fragmentCode)
     {
@@ -53,10 +52,14 @@ public class Shader
             GL20.glDetachShader(programId, vertexId);
         if(fragmentId != 0)
             GL20.glDetachShader(programId, fragmentId);
+        GL20.glUseProgram(programId);
+    }
+
+    public void validate()
+    {
         GL20.glValidateProgram(programId);
         if(GL20.glGetProgrami(programId, GL20.GL_VALIDATE_STATUS) == 0)
             throw new RuntimeException(GL20.glGetProgramInfoLog(programId));
-        GL20.glUseProgram(programId);
     }
 
     private void compile()
@@ -83,13 +86,11 @@ public class Shader
         int location = GL20.glGetUniformLocation(programId, uniformName);
         if(location < 0) throw new InvalidUniformLocationException(programId, uniformName, location);
         uniforms.put(uniformName, location);
-        //uniformSet.add(new Uniform(uniformName, location, null));
     }
 
     public void cleanup()
     {
         uniforms.clear();
-        //uniformSet.clear();
         if(programId != 0)
             GL20.glDeleteProgram(programId);
         GL20.glUseProgram(0);
@@ -97,12 +98,6 @@ public class Shader
 
     public void setUniform(String uniformName, Object value)
     {
-        //Uniform uniform = getUniform(uniformName);
-        //if(uniform == null) return;
-        //int location = uniform.id;
-        //if(uniform.value != null)
-        //    if(uniform.value.equals(value))
-        //        return;
         if(value instanceof Integer v)
         {
             GL30.glUniform1i(uniforms.get(uniformName), v);
@@ -130,30 +125,6 @@ public class Shader
                 GL30.glUniformMatrix4fv(uniforms.get(uniformName), false,
                         v.get(stack.mallocFloat(16)));
             }
-        }
-        //uniform.value = value;
-    }
-
-    /*
-    private Uniform getUniform(String name)
-    {
-        for(Uniform uniform : uniformSet)
-            if(uniform.name.equals(name))
-                return uniform;
-        return null;
-    }*/
-
-    private static class Uniform
-    {
-        public String name;
-        public int id;
-        public Object value;
-
-        public Uniform(String name, int id, Object value)
-        {
-            this.name = name;
-            this.id = id;
-            this.value = value;
         }
     }
 }

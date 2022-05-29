@@ -36,12 +36,19 @@ public class TerrainRenderer
         shader.createUniform("viewMatrix");
         shader.createUniform("worldColor");
         shader.createUniform("terrainSize");
-
         shader.createUniform("height");
         shader.createUniform("matColor");
         shader.createUniform("matColorGrass");
         shader.createUniform("matMetallic");
         shader.createUniform("matSpecular");
+
+        shader.setUniform("height", 0);
+        shader.setUniform("matColor", 1);
+        shader.setUniform("matColorGrass", 2);
+        shader.setUniform("matMetallic", 3);
+        shader.setUniform("matSpecular", 4);
+
+        shader.validate();
 
         EntityRenderer.createDistanceFogUniform(shader);
         EntityRenderer.createMaterialUniform(shader);
@@ -66,12 +73,6 @@ public class TerrainRenderer
         shader.setUniform("viewMatrix", Transformation.createViewMatrix(camera));
         shader.setUniform("worldColor", worldColor);
         shader.setUniform("terrainSize", new Vector2f(terrain.getSize()));
-
-        shader.setUniform("height", 0);
-        shader.setUniform("matColor", 1);
-        shader.setUniform("matColorGrass", 2);
-        shader.setUniform("matMetallic", 3);
-        shader.setUniform("matSpecular", 4);
 
         EntityRenderer.setMaterialUniform(shader, entity.material);
         EntityRenderer.setPointLightsUniform(shader, pointLights);
