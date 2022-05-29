@@ -58,6 +58,8 @@ uniform PointLight pointLights[32];
 uniform vec4 worldColor;
 uniform DistanceFog distanceFog;
 uniform int hasCubeMap;
+uniform mat4 viewMatNoRotation;
+uniform vec3 cameraDir;
 
 out vec4 fragColor;
 
@@ -120,9 +122,8 @@ vec4 color()
     color = color * worldColor + specular + lightColor;
 
     //reflection
-    vec3 cameraDir = vec3(vec4(fragPosition, 1) * fragViewMatrix);
     if(hasCubeMap == 1)
-        color = vec4(mix(color.xyz, texture(matReflect, fragNormal * cameraDir).xyz, metallic), 1);
+        color = vec4(mix(color.xyz, texture(matReflect, (vec4(fragNormal, 0) * viewMatNoRotation).xyz + normalize(cameraDir) / 2).xyz, metallic), 1);
 
     return color;
 }

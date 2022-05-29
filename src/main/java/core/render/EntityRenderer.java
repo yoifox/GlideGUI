@@ -3,6 +3,7 @@ package core.render;
 import core.Looper;
 import core.body.*;
 import core.util.MathUtil;
+import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
@@ -45,6 +46,8 @@ public class EntityRenderer
         shader.createUniform("matNormal");
         shader.createUniform("matReflect");
         shader.createUniform("hasCubeMap");
+        shader.createUniform("viewMatNoRotation");
+        shader.createUniform("cameraDir");
 
         shader.setUniform("matColor", 0);
         shader.setUniform("matMetallic", 1);
@@ -75,8 +78,12 @@ public class EntityRenderer
         shader.setUniform("projectionMatrix", window.getProjectionMatrix());
         shader.setUniform("transformationMatrix", Transformation.createTransformationMatrix(entity));
         shader.setUniform("viewMatrix", Transformation.createViewMatrix(camera));
+        Matrix4f viewMatNoRotation = Transformation.createViewMatrix(camera);
+        viewMatNoRotation.setRotationXYZ(0, 0, 0);
+        shader.setUniform("viewMatNoRotation", viewMatNoRotation);
         shader.setUniform("worldColor", worldColor);
         shader.setUniform("hasCubeMap", scene.skyBox == null ? 0 : 1);
+        shader.setUniform("cameraDir", new Vector3f(camera.x, -camera.y, camera.z).sub(new Vector3f(entity.x, -entity.y, entity.z)).normalize());
 
         setMaterialUniform(shader, entity.material);
         setPointLightsUniform(shader, pointLights);
