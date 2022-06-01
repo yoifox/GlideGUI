@@ -9,6 +9,7 @@ public class Entity extends Body3d
     public Mesh mesh;
     public Material material;
     public float[] uvs;
+    public CubeMap cubeMapReflection;
 
     public Entity(Mesh mesh) {
         this.mesh = mesh;

@@ -82,8 +82,11 @@ public class EntityRenderer
         viewMatNoRotation.setRotationXYZ(0, 0, 0);
         shader.setUniform("viewMatNoRotation", viewMatNoRotation);
         shader.setUniform("worldColor", worldColor);
-        shader.setUniform("hasCubeMap", scene.skyBox == null ? 0 : 1);
-        shader.setUniform("cameraDir", new Vector3f(camera.x, -camera.y, camera.z).sub(new Vector3f(entity.x, -entity.y, entity.z)).normalize());
+        shader.setUniform("hasCubeMap", entity.cubeMapReflection == null ? 0 : 1);
+        Vector3f ray = scene.rayCast.getRay(scene, scene.window.getWidth() / 2f, scene.window.getHeight() / 2f);
+        shader.setUniform("cameraDir", new Vector3f(camera.x, -camera.y, camera.z).sub(new Vector3f(entity.x, entity.y, entity.z))
+                .add(ray.mul(MathUtil.distance(camera, entity)).div(2)).normalize());
+        //shader.setUniform("cameraDir", new Vector3f(ray.x, -ray.y, ray.z).sub(new Vector3f(entity.x, -entity.y, entity.z)));
 
         setMaterialUniform(shader, entity.material);
         setPointLightsUniform(shader, pointLights);
@@ -227,10 +230,10 @@ public class EntityRenderer
                 GL11.glBindTexture(GL11.GL_TEXTURE_2D, entity.material.normal.getId());
         }
 
-        if(scene.skyBox != null)
+        if(entity.cubeMapReflection != null)
         {
             GL13.glActiveTexture(GL13.GL_TEXTURE5);
-            GL11.glBindTexture(GL13.GL_TEXTURE_CUBE_MAP, scene.skyBox.id);
+            GL11.glBindTexture(GL13.GL_TEXTURE_CUBE_MAP, entity.cubeMapReflection.id);
         }
     }
 
