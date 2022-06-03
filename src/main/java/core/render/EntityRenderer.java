@@ -101,7 +101,7 @@ public class EntityRenderer
         bind(entity);
         if(entity.material.transparencyValue < 1 || entity.material.transparency != null)
         {
-            GL11.glDisable(GL11.GL_CULL_FACE);
+            //GL11.glDisable(GL11.GL_CULL_FACE);
         }
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);

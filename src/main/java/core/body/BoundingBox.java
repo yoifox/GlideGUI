@@ -44,15 +44,15 @@ public class BoundingBox extends Body3d
     {
         float y = this.y - height / 2f;
         return new float[] {
-                x, y, z,
-                x + width, y, z,
-                x, y, z + depth,
-                x + width, y, z + depth,
+                x - width / 2f, y, z - depth / 2f,
+                x + width / 2f, y, z - depth / 2f,
+                x - width / 2f, y, z + depth / 2f,
+                x + width / 2f, y, z + depth / 2f,
 
-                x, y + height, z,
-                x + width, y + height, z,
-                x, y + height, z + depth,
-                x + width, y + height, z + depth
+                x - width / 2f, y + height, z - depth / 2f,
+                x + width / 2f, y + height, z - depth / 2f,
+                x - width / 2f, y + height, z + depth / 2f,
+                x + width / 2f, y + height, z + depth / 2f
         };
     }
 }
