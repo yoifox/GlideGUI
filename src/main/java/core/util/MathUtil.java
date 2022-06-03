@@ -167,4 +167,19 @@ public class MathUtil
         if(point.z <= minDepth || point.z >= maxDepth) return false;
         return true;
     }
+
+    public static boolean boxInBox(BoundingBox box1, BoundingBox box2)
+    {
+        float[] vertices = box1.getVertices();
+        for(int i = 0; i < vertices.length; )
+            if(pointInBox(box2, new Vector3f(vertices[i++], vertices[i++], vertices[i++])))
+                return true;
+
+        vertices = box2.getVertices();
+        for(int i = 0; i < vertices.length; )
+            if(pointInBox(box1, new Vector3f(vertices[i++], vertices[i++], vertices[i++])))
+                return true;
+
+        return false;
+    }
 }

@@ -42,7 +42,7 @@ public class RigidBody3d extends PhysicsBody3d
             {
                 if(collisionShape.boxCollision) //rigidBody is a box
                 {
-                    int i = 0;
+                    /*int i = 0;
                     BoundingBox box = collisionShape.getBoundingBox();
                     boolean isColliding = false;
                     float[] vertices = box.getVertices();
@@ -51,7 +51,8 @@ public class RigidBody3d extends PhysicsBody3d
                         Vector3f vertex = new Vector3f(vertices[i++], vertices[i++], vertices[i++]);
                         if(MathUtil.pointInBox(c.getBoundingBox(), vertex))
                             isColliding = true;
-                    }
+                    }*/
+                    boolean isColliding = MathUtil.boxInBox(collisionShape.getBoundingBox(), c.getBoundingBox());
 
                     if(isColliding)
                     {
