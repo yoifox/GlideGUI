@@ -25,19 +25,19 @@ public class Mesh
         this.vertexCount = vertexCount;
     }
 
-    public int getVao() {
+    public final int getVao() {
         return vao;
     }
 
-    public int[] getVbos() {
+    public final int[] getVbos() {
         return vbos;
     }
 
-    public int getVertexCount() {
+    public final int getVertexCount() {
         return vertexCount;
     }
 
-    public int getIndicesCount() {
+    public final int getIndicesCount() {
         return indicesCount;
     }
 }

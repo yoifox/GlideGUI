@@ -2,8 +2,6 @@ package core.body.ui;
 
 public class Video extends Component
 {
-    float frameRate;
-
     @Override
     public void onCreate()
     {
@@ -14,5 +12,9 @@ public class Video extends Component
     public void update(float delta)
     {
         super.update(delta);
+    }
+
+    public void open()
+    {
     }
 }

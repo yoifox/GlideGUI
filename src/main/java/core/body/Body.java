@@ -77,31 +77,31 @@ public class Body
     List<Runnable> updatePhysicsTask = new ArrayList<>();
     LinkedBlockingQueue<Runnable> onDestroyTask = new LinkedBlockingQueue<>();
 
-    public void doOnCreate(Runnable runnable)
+    public final void doOnCreate(Runnable runnable)
     {
         onCreateTask.add(runnable);
     }
-    public void doOnDestroy(Runnable runnable)
+    public final void doOnDestroy(Runnable runnable)
     {
         onDestroyTask.add(runnable);
     }
-    public void doEveryFrame(Runnable runnable)
+    public final void doEveryFrame(Runnable runnable)
     {
         updateTask.add(runnable);
     }
-    public void doPhysicsTask(Runnable runnable)
+    public final void doPhysicsTask(Runnable runnable)
     {
         updatePhysicsTask.add(runnable);
     }
-    public void doNextFrame(Runnable runnable) {nextFrameTask.add(runnable);}
+    public final void doNextFrame(Runnable runnable) {nextFrameTask.add(runnable);}
 
-    public String getId() {return id;}
+    public final String getId() {return id;}
 
-    public boolean isCreated() {
+    public final boolean isCreated() {
         return created;
     }
 
-    public Body getChild(int index)
+    public final Body getChild(int index)
     {
         int count = 0;
         for(Map.Entry<String, Body> entry : children.entrySet())
@@ -112,12 +112,12 @@ public class Body
         return null;
     }
 
-    public Body getChild(String id)
+    public final Body getChild(String id)
     {
         return children.get(id);
     }
 
-    public Body findBodyById(String id)
+    public final Body findBodyById(String id)
     {
         if(children.containsKey(id)) return children.get(id);
         else
@@ -131,14 +131,14 @@ public class Body
         return null;
     }
 
-    public Body addChild(Body body)
+    public final Body addChild(Body body)
     {
         children.put(body.id, body);
         body.parent = this;
         return this;
     }
 
-    public Body removeChild(Body body)
+    public final Body removeChild(Body body)
     {
         children.remove(body.id);
         body.onDestroy();
@@ -146,7 +146,7 @@ public class Body
         return this;
     }
 
-    public Body removeChild(String id)
+    public final Body removeChild(String id)
     {
         children.remove(id);
         children.get(id).onDestroy();

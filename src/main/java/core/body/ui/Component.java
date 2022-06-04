@@ -95,12 +95,12 @@ public class Component extends Body2d
     public Component gradComp;
     public ColorValue gradCompColor;
     public boolean isGradComp = false;
-    public Component shadow(int px, float x, float y)
+    public final Component shadow(int px, float x, float y)
     {
         shadow(px, x, y, ColorValue.COLOR_BLACK);
         return this;
     }
-    public Component shadow(int px, float x, float y, ColorValue color)
+    public final Component shadow(int px, float x, float y, ColorValue color)
     {
         Runnable doRun = new Runnable() {
             @Override
@@ -136,12 +136,12 @@ public class Component extends Body2d
         }
         return this;
     }
-    public Component boxShadow(int px, float x, float y)
+    public final Component boxShadow(int px, float x, float y)
     {
         boxShadow(px, x, y, ColorValue.COLOR_BLACK);
         return this;
     }
-    public Component boxShadow(int px, float x, float y, ColorValue color)
+    public final Component boxShadow(int px, float x, float y, ColorValue color)
     {
         Runnable doRun = new Runnable() {
             @Override
@@ -174,22 +174,18 @@ public class Component extends Body2d
         return this;
     }
 
-    public Component positionEachFrame(float x, float y)
+    public final Component positionEachFrame(String x, String y)
     {
         doEveryFrame(new Runnable() {
             @Override
             public void run() {
-                Component.this.x = x;
-                Component.this.y = y;
-                isXPercentage = true;
-                isYPercentage = true;
-                origin = ORIGIN_CENTER;
+                position(x, y);
             }
         });
         return this;
     }
 
-    public Component center()
+    public final Component center()
     {
         x = 0.5f;
         y = 0.5f;
@@ -199,7 +195,7 @@ public class Component extends Body2d
         return this;
     }
 
-    public Component fill()
+    public final Component fill()
     {
         x = 1;
         y = 1;
@@ -209,39 +205,39 @@ public class Component extends Body2d
         return this;
     }
 
-    public Component setRoundness(float topLeft, float topRight, float bottomLeft, float bottomRight)
+    public final Component setRoundness(float topLeft, float topRight, float bottomLeft, float bottomRight)
     {
         bc.roundness = new float[] {topLeft, topRight, bottomLeft, bottomRight};
         return this;
     }
 
-    public Component setOrigin(int origin)
+    public final Component setOrigin(int origin)
     {
         this.origin = origin;
         return this;
     }
 
-    public Component setBorder(float width, ColorValue color)
+    public final Component setBorder(float width, ColorValue color)
     {
         bc.borderWidth = width;
         bc.borderColor = color;
         return this;
     }
 
-    public Component setBackground(ColorValue color)
+    public final Component setBackground(ColorValue color)
     {
         if(bc.texture != null) bc.texture = null;
         bc.color = color;
         return this;
     }
 
-    public Component setBackground(Texture texture)
+    public final Component setBackground(Texture texture)
     {
         bc.texture = texture;
         return this;
     }
 
-    public Component position(String x, String y)
+    public final Component position(String x, String y)
     {
         if(x.matches("(\\d*\\.)?\\d+%"))
         {
@@ -280,7 +276,7 @@ public class Component extends Body2d
         return this;
     }
 
-    public Component setDimensions(String width, String height)
+    public final Component setDimensions(String width, String height)
     {
         if(width.matches("(\\d*\\.)?\\d+%"))
         {
@@ -319,7 +315,7 @@ public class Component extends Body2d
     }
 
     //Returns width in pixels
-    public float getWidth()
+    public final float getWidth()
     {
         if(parent instanceof Component component)
             return Math.abs(isWidthPercentage ? width * component.getWidth() : width);
@@ -328,7 +324,7 @@ public class Component extends Body2d
     }
 
     //Returns height in pixels
-    public float getHeight()
+    public final float getHeight()
     {
         if(parent instanceof Component component)
             return Math.abs(isHeightPercentage ? height * component.getHeight() : height);
@@ -337,7 +333,7 @@ public class Component extends Body2d
     }
 
     //Returns x in pixels
-    public float getX()
+    public final float getX()
     {
         if(parent instanceof Component component)
             return isXPercentage ? Transformation.getTopLeftCorner(component).x + x * component.getWidth() : x;
@@ -346,7 +342,7 @@ public class Component extends Body2d
     }
 
     //Returns y in pixels
-    public float getY()
+    public final float getY()
     {
         if(parent instanceof Component component)
             return isYPercentage ? Transformation.getTopLeftCorner(component).y + y * component.getHeight() : y;
@@ -355,7 +351,7 @@ public class Component extends Body2d
     }
 
     //returns pixel value of roundness
-    public float[] getRoundness()
+    public final float[] getRoundness()
     {
         if(bc == null) return new float[]{0, 0, 0, 0};
         float max = Math.max(width, height);
@@ -366,17 +362,17 @@ public class Component extends Body2d
     }
 
     //returns pixel value of uvs
-    public float[] getUvs()
+    public final float[] getUvs()
     {
         return uvs;
     }
 
-    public Vector2f getTopLeftCorner()
+    public final Vector2f getTopLeftCorner()
     {
         return Transformation.getTopLeftCorner(this);
     }
 
-    public boolean isOutsideParentBounds(float x, float y)
+    public final boolean isOutsideParentBounds(float x, float y)
     {
         if(parent instanceof Component component)
         {

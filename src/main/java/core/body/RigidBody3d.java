@@ -10,6 +10,7 @@ public class RigidBody3d extends PhysicsBody3d
 {
     CollisionShape3d collisionShape;
     List<CollisionShape3d> collidingWith = new ArrayList<>();
+    public float maxDistance = -1;
 
     public RigidBody3d(CollisionShape3d collisionShape)
     {
@@ -24,12 +25,13 @@ public class RigidBody3d extends PhysicsBody3d
         detectCollision(scene.getCollisionShape3ds());
     }
 
-    public void detectCollision(List<CollisionShape3d> shapes)
+    public final void detectCollision(List<CollisionShape3d> shapes)
     {
         for(CollisionShape3d c : shapes)
         {
             if(c.collisionShapeListener == null && collisionShape.collisionShapeListener == null) continue;
             if(c == collisionShape) continue;
+            if(MathUtil.distance(collisionShape, c) > maxDistance) continue;
             if(!shouldDetect(c.masks)) continue;
             Vector3f intersectingVertex;
             Vector3f normal = MathUtil.normal(new Vector3f(x, y, z), c.getBoundingBox().getCenter());

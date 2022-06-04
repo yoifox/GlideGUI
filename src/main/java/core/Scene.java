@@ -54,7 +54,7 @@ public class Scene implements Context
     Texture frame;
 
     @Override
-    public synchronized void render(float delta)
+    public final synchronized void render(float delta)
     {
         if(stopped) return;
         if(Float.isInfinite(delta)) delta = 0;
@@ -85,6 +85,7 @@ public class Scene implements Context
         ray.x = camera.x;
         ray.y = camera.y;
         ray.z = camera.z;
+        ray.maxDistance = 250;
 
         keyInput.update(delta);
 
@@ -247,7 +248,7 @@ public class Scene implements Context
     public void onDestroy() {}
 
     @Override
-    public void init(Window window)
+    public final void init(Window window)
     {
         this.window = window;
         setClearColor(1, 1, 1, 1);
@@ -307,7 +308,7 @@ public class Scene implements Context
     }
 
     @Override
-    public void cleanup()
+    public final void cleanup()
     {
         stopped = true;
         onDestroy();
@@ -321,7 +322,7 @@ public class Scene implements Context
         GL30.glDeleteFramebuffers(fbo);
     }
 
-    public void changeScene(Scene scene)
+    public final void changeScene(Scene scene)
     {
         changeScene = new Runnable() {
             @Override
@@ -332,7 +333,7 @@ public class Scene implements Context
         };
     }
 
-    public void changeScene(Scene scene, Object extra)
+    public final void changeScene(Scene scene, Object extra)
     {
         changeScene = new Runnable() {
             @Override
@@ -346,7 +347,7 @@ public class Scene implements Context
 
     private Object extra;
 
-    public void setExtra(Object extra)
+    public final void setExtra(Object extra)
     {
         this.extra = extra;
     }
@@ -355,7 +356,7 @@ public class Scene implements Context
         return extra;
     }
 
-    public void addBody(Body body)
+    public final void addBody(Body body)
     {
         treeModification.add(new Runnable() {
             @Override
@@ -366,7 +367,7 @@ public class Scene implements Context
 
     }
 
-    public void removeBody(Body body)
+    public final void removeBody(Body body)
     {
         treeModification.add(new Runnable() {
             @Override
@@ -377,7 +378,7 @@ public class Scene implements Context
         });
     }
 
-    public void removeBody(String id)
+    public final void removeBody(String id)
     {
         treeModification.add(new Runnable() {
             @Override
@@ -388,7 +389,7 @@ public class Scene implements Context
         });
     }
 
-    public void removeBody(int index)
+    public final void removeBody(int index)
     {
         treeModification.add(new Runnable() {
             @Override
@@ -409,12 +410,12 @@ public class Scene implements Context
         });
     }
 
-    public Body getBody(String id)
+    public final Body getBody(String id)
     {
         return bodies.get(id);
     }
 
-    public Body findBodyById(String id)
+    public final Body findBodyById(String id)
     {
         if(bodies.containsKey(id)) return bodies.get(id);
         else
@@ -428,7 +429,7 @@ public class Scene implements Context
         return null;
     }
 
-    public Body getBody(int index)
+    public final Body getBody(int index)
     {
         int i = 0;
         for(Map.Entry<String, Body> entry : bodies.entrySet())
@@ -437,19 +438,19 @@ public class Scene implements Context
         return null;
     }
 
-    public List<CollisionShape3d> getCollisionShape3ds() {
+    public final List<CollisionShape3d> getCollisionShape3ds() {
         return previousCollisionShape3ds;
     }
 
-    public Map<String, Body> getBodies() {
+    public final Map<String, Body> getBodies() {
         return bodies;
     }
 
-    public void setClearColor(float r, float g, float b, float a)
+    public final void setClearColor(float r, float g, float b, float a)
     {
         GL11.glClearColor(r, g, b, a);
     }
 
     private Vector4f worldColor = new Vector4f(0.5f, 0.5f, 0.5f, 1);
-    public void setWorldColor(float r, float g, float b, float a) { worldColor = new Vector4f(r, g, b, a); };
+    public final void setWorldColor(float r, float g, float b, float a) { worldColor = new Vector4f(r, g, b, a); };
 }

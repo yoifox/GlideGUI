@@ -35,7 +35,7 @@ public class Entity extends Body3d
         super.updatePhysics(delta);
     }
 
-    public BoundingBox getBoundingBox()
+    public final BoundingBox getBoundingBox()
     {
         BoundingBox boundingBox = mesh.boundingBox;
         BoundingBox result = new BoundingBox(0, 0, 0);
@@ -49,7 +49,7 @@ public class Entity extends Body3d
         return result;
     }
 
-    public CollisionShape3d addBoxCollision(String... masks)
+    public final CollisionShape3d addBoxCollision(String... masks)
     {
         CollisionShape3d collisionShape3d = new CollisionShape3d(mesh.boundingBox);
         collisionShape3d.masks.addAll(Arrays.asList(masks));

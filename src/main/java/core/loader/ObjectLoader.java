@@ -16,6 +16,8 @@ import core.Scene;
 import core.body.ui.Font;
 import core.util.Util;
 
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
@@ -529,5 +531,43 @@ public class ObjectLoader
         Font font = new Font(stbttFontinfo, cls.getName() + "?/" + src);
         fonts.add(font);
         return font;
+    }
+
+    public Texture loadTexture(BufferedImage image)
+    {
+        ByteBuffer buffer = decode(image);
+
+        int id = GL11.glGenTextures();
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, id);
+        GL11.glPixelStorei(GL11.GL_UNPACK_ALIGNMENT,1);
+        GL11.glTexParameterf(GL11.GL_TEXTURE_2D, EXTTextureFilterAnisotropic.GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, 4);
+        GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
+        GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA, image.getWidth(), image.getHeight(), 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, buffer);
+        GL30.glGenerateMipmap(GL11.GL_TEXTURE_2D);
+
+        Texture texture = new Texture(id, 4, GL11.GL_RGBA, buffer);
+        textures.add(texture);
+        return texture;
+    }
+
+    public static ByteBuffer decode(BufferedImage image)
+    {
+        int[] pixels = new int[image.getWidth() * image.getHeight()];
+        image.getRGB(0, 0, image.getWidth(), image.getHeight(), pixels, 0, image.getWidth());
+        ByteBuffer buffer = ByteBuffer.allocateDirect(image.getWidth() * image.getHeight() * 4);
+
+        for(int h = 0; h < image.getHeight(); h++) {
+            for(int w = 0; w < image.getWidth(); w++) {
+                int pixel = pixels[h * image.getWidth() + w];
+
+                buffer.put((byte) ((pixel >> 16) & 0xFF));
+                buffer.put((byte) ((pixel >> 8) & 0xFF));
+                buffer.put((byte) (pixel & 0xFF));
+                buffer.put((byte) ((pixel >> 24) & 0xFF));
+            }
+        }
+
+        buffer.flip();
+        return buffer;
     }
 }
