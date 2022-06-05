@@ -11,4 +11,5 @@ public class Info
         return new String[] {"png", "jpg", "bmp"};
     }
     public static String ffmpegPath = "C:/Users/User/Desktop/test/ffmpeg/bin";
+    public static int collisionMaskArraySize = 1;
 }

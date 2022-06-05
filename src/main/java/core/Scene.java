@@ -279,7 +279,7 @@ public class Scene implements Context
         skyboxRenderer.init(this);
 
         CollisionShape3d rayCollision = new CollisionShape3d(0);
-        rayCollision.masks.add("default");
+        rayCollision.defaultMask = true;
         ray = new RigidBody3d(rayCollision);
         rayCast = new RayCast(camera);
         rayCollision.collisionShapeListener = new CollisionShape3d.CollisionShapeListener() {

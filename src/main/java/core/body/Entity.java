@@ -49,10 +49,20 @@ public class Entity extends Body3d
         return result;
     }
 
-    public final CollisionShape3d addBoxCollision(String... masks)
+    /*public final CollisionShape3d addBoxCollision(String... masks)
     {
         CollisionShape3d collisionShape3d = new CollisionShape3d(mesh.boundingBox);
         collisionShape3d.masks.addAll(Arrays.asList(masks));
+        addChild(collisionShape3d);
+        return collisionShape3d;
+    }*/
+    public final CollisionShape3d addBoxCollision(int... masks)
+    {
+        CollisionShape3d collisionShape3d = new CollisionShape3d(mesh.boundingBox);
+        for(int i : masks)
+        {
+            collisionShape3d.masks[i] = true;
+        }
         addChild(collisionShape3d);
         return collisionShape3d;
     }

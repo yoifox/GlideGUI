@@ -1,5 +1,6 @@
 package core.body;
 
+import core.meta.Info;
 import org.joml.Vector3f;
 
 import java.util.ArrayList;
@@ -12,7 +13,9 @@ public class CollisionShape3d extends PhysicsBody3d
     boolean boxCollision = true;
     boolean singleVertex = false;
     float singleVertexRadius = 0;
-    public List<String> masks = new ArrayList<>();
+    //public List<String> masks = new ArrayList<>();
+    public boolean defaultMask = false;
+    boolean[] masks = new boolean[Info.collisionMaskArraySize];
     public CollisionShapeListener collisionShapeListener;
     public OnClickListener onClickListener;
     public boolean isPressed;
@@ -64,7 +67,7 @@ public class CollisionShape3d extends PhysicsBody3d
 
     public void setOnClickListener(OnClickListener onClickListener) {
         this.onClickListener = onClickListener;
-        masks.add("default");
+        defaultMask = true;
     }
 
     CollisionShape3d pressingRay;
@@ -90,6 +93,11 @@ public class CollisionShape3d extends PhysicsBody3d
                 }
             }
         }
+    }
+
+    public void setCollisionShapeListener(CollisionShapeListener collisionShapeListener)
+    {
+        this.collisionShapeListener = collisionShapeListener;
     }
 
     public interface CollisionShapeListener

@@ -2,6 +2,16 @@ package core.body.ui;
 
 import core.body.ColorValue;
 import core.body.Texture;
+import cz.vutbr.web.css.MediaSpec;
+import cz.vutbr.web.css.MediaSpecAll;
+import org.fit.cssbox.awt.GraphicsEngine;
+import org.fit.cssbox.css.CSSNorm;
+import org.fit.cssbox.css.DOMAnalyzer;
+import org.fit.cssbox.layout.Dimension;
+
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.net.MalformedURLException;
 
 public class Color
 {
@@ -29,6 +39,7 @@ public class Color
 
     public Color() {}
     public Color(Texture texture) {this.texture = texture;}
+    public Color(ColorValue color) {this.color = color;}
     public Color(float r, float g, float b, float a) {this.color = new ColorValue(r, g, b, a);}
 
     public Color(ColorValue color, float borderWidth, ColorValue borderColor, float[] roundness)

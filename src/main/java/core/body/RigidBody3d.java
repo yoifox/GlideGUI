@@ -31,8 +31,8 @@ public class RigidBody3d extends PhysicsBody3d
         {
             if(c.collisionShapeListener == null && collisionShape.collisionShapeListener == null) continue;
             if(c == collisionShape) continue;
-            if(MathUtil.distance(collisionShape, c) > maxDistance) continue;
-            if(!shouldDetect(c.masks)) continue;
+            if(MathUtil.distance(collisionShape, c) > maxDistance && maxDistance != -1) continue;
+            if(!shouldDetect(c)) continue;
             Vector3f intersectingVertex;
             Vector3f normal = MathUtil.normal(new Vector3f(x, y, z), c.getBoundingBox().getCenter());
             if(collisionShape.singleVertex)
@@ -102,9 +102,19 @@ public class RigidBody3d extends PhysicsBody3d
         }
     }
 
-    private boolean shouldDetect(List<String> masks)
+    /*private boolean shouldDetect(List<String> masks)
     {
         for(String s : masks) if(this.collisionShape.masks.contains(s)) return true;
+        return false;
+    }*/
+    private boolean shouldDetect(CollisionShape3d c)
+    {
+        if(collisionShape.defaultMask && c.defaultMask) return true;
+        for(int i = 0; i < c.masks.length; i++)
+        {
+            if(collisionShape.masks[i] && c.masks[i])
+                return true;
+        }
         return false;
     }
 }

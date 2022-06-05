@@ -42,14 +42,13 @@ public class Text extends Layout
         setText(text);
     }
 
-    public void append(String text)
+    public Text append(String text)
     {
         this.text = this.text + text;
         float ax = lastPosX;
         for(char c : text.toCharArray())
         {
             TextCharacter textCharacter = new TextCharacter(font, String.valueOf(c), textSize);
-            textCharacter.visibleOutsideParentBounds = true;
             textCharacter.x = ax;
             ax += textCharacter.width;
             if(textColor != null)
@@ -58,9 +57,10 @@ public class Text extends Layout
             addChild(textCharacter);
         }
         lastPosX = ax;
+        return this;
     }
 
-    public void setText(String text)
+    public Text setText(String text)
     {
         this.text = text;
         children.clear();
@@ -68,7 +68,6 @@ public class Text extends Layout
         for(char c : text.toCharArray())
         {
             TextCharacter textCharacter = new TextCharacter(font, String.valueOf(c), textSize);
-            textCharacter.visibleOutsideParentBounds = true;
             textCharacter.x = ax;
             ax += textCharacter.width;
             if(textColor != null)
@@ -78,30 +77,35 @@ public class Text extends Layout
             addChild(textCharacter);
         }
         lastPosX = ax;
+        return this;
     }
 
-    public void setTextSize(int textSize)
+    public Text setTextSize(int textSize)
     {
         this.textSize = textSize;
         setText(text);
+        return this;
     }
 
-    public void setTextColor(ColorValue textColor)
+    public Text setTextColor(ColorValue textColor)
     {
         this.textColor = textColor;
         setText(text);
+        return this;
     }
 
-    public void setLineSpacing(int lineSpacing)
+    public Text setLineSpacing(int lineSpacing)
     {
         this.lineSpacing = lineSpacing;
         setText(text);
+        return this;
     }
 
-    public void setFont(Font font)
+    public Text setFont(Font font)
     {
         this.font = font;
         setText(text);
+        return this;
     }
 
     public void setTextDirection(int textDirection)
