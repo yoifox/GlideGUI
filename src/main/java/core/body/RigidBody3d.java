@@ -34,7 +34,11 @@ public class RigidBody3d extends PhysicsBody3d
             if(MathUtil.distance(collisionShape, c) > maxDistance && maxDistance != -1) continue;
             if(!shouldDetect(c)) continue;
             Vector3f intersectingVertex;
-            Vector3f normal = MathUtil.normal(new Vector3f(x, y, z), c.getBoundingBox().getCenter());
+            Vector3f normal;
+            if(c.singleVertex)
+                normal = MathUtil.normal(new Vector3f(x, y, z), new Vector3f(c.x, c.y, c.z));
+            else
+                normal = MathUtil.normal(new Vector3f(x, y, z), c.getBoundingBox().getCenter());
             if(collisionShape.singleVertex)
                 intersectingVertex = MathUtil.moveVertexAlongNormal(new Vector3f(x, y, z), normal, collisionShape.getSingleVertexRadius());
             else

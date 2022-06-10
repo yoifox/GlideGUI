@@ -94,10 +94,10 @@ public class Looper
                 }
 
                 //closing windows
-                synchronized (windows)
+                boolean changeContext = false;
+                for(Window window : toClose)
                 {
-                    boolean changeContext = false;
-                    for(Window window : toClose)
+                    synchronized (windows)
                     {
                         window.getContext().cleanup();
                         boolean firstWindow = window == windows.get(0);
@@ -110,10 +110,10 @@ public class Looper
                             return;
                         }
                     }
-                    toClose.clear();
-                    if(changeContext)
-                        windows.get(0).setGlContext();
                 }
+                toClose.clear();
+                if(changeContext)
+                    windows.get(0).setGlContext();
             }
             if(render)
             {

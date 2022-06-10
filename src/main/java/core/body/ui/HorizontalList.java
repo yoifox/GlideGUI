@@ -53,7 +53,8 @@ public class HorizontalList extends Layout
         {
             component.parent = this;
             component.scene = scene;
-            component.onCreate();
+            if(!component.isCreated())
+                component.onCreate();
         }
     }
 

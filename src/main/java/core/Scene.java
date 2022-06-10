@@ -14,6 +14,7 @@ import core.input.Mouse;
 import core.loader.ObjectLoader;
 import core.render.*;
 
+import java.nio.ByteBuffer;
 import java.util.*;
 
 public class Scene implements Context
@@ -40,6 +41,7 @@ public class Scene implements Context
     protected TerrainRenderer terrainRenderer;
     protected FXAARenderer fxaaRenderer;
     protected SkyboxRenderer skyboxRenderer;
+    protected DepthBufferRenderer depthBufferRenderer;
     public boolean stopped = false;
     public Texture grad, boxShadow;
     public RigidBody3d ray;
@@ -52,6 +54,8 @@ public class Scene implements Context
 
     int fbo;
     Texture frame;
+    int shadowFbo;
+    Texture shadowDepth;
 
     @Override
     public final synchronized void render(float delta)
@@ -76,6 +80,10 @@ public class Scene implements Context
         }
 
         renderGui();
+
+        GL30.glDrawBuffer(GL30.GL_COLOR_ATTACHMENT0);
+
+        //renderShadows(delta);
 
         previousPointLights = new ArrayList<>(pointLights);
         previousSpotLights = new ArrayList<>(spotLights);
@@ -115,25 +123,62 @@ public class Scene implements Context
         toRender.clear();
     }
 
+    private Texture renderShadows(float delta)
+    {
+        for(Map.Entry<String, Body> entry : bodies.entrySet())
+        {
+            List<Class<?>> types = new ArrayList<>();
+            types.add(Entity.class);
+            updateTree(entry.getValue(), delta, types, shadowFbo, null, shadowDepth, false);
+        }
+        return shadowDepth;
+    }
+
     private boolean renderGradComp = false;
-    private void updateTree(Body body, float delta)
+    //pass types = null to render all
+    private void updateTree(Body body, float delta, List<Class<?>> types, int fbo, Texture color, Texture depth, boolean update)
     {
         if(!body.visible) return;
-        if(!body.isCreated())
+
+        boolean render = false;
+        if(types != null)
+        {
+            for(Class<?> cls : types)
+            {
+                if(body.getClass().isInstance(cls)) {
+                    render = true;
+                    break;
+                }
+            }
+        }
+        else render = true;
+
+        GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, fbo);
+        if(depth != null)
+            GL32.glFramebufferTexture(GL30.GL_FRAMEBUFFER, GL30.GL_DEPTH_ATTACHMENT, depth.getId(), 0);
+        else
+            GL32.glFramebufferTexture(GL30.GL_FRAMEBUFFER, GL30.GL_DEPTH_ATTACHMENT, 0, 0);
+        if(color != null)
+            GL32.glFramebufferTexture(GL30.GL_FRAMEBUFFER, GL30.GL_COLOR_ATTACHMENT0, color.getId(), 0);
+        else
+            GL32.glFramebufferTexture(GL30.GL_FRAMEBUFFER, GL30.GL_COLOR_ATTACHMENT0, 0, 0);
+
+        if(!body.isCreated() && update)
         {
             body.scene = this;
             body.onCreate();
         }
         if(!(body instanceof Text))
         {
-            body.update(delta);
+            if(update)
+                body.update(delta);
         }
         if(body instanceof Component component)
         {
             if(component.gradComp != null)
             {
                 renderGradComp = true;
-                updateTree(component.gradComp, delta);
+                updateTree(component.gradComp, delta, types, fbo, color, depth, update);
             }
             if(component.isGradComp && !renderGradComp)
                 return;
@@ -150,49 +195,57 @@ public class Scene implements Context
                 BoundingBox boundingBox = entity.getBoundingBox();
                 bbCube.setScale(boundingBox.width / 2f + 0.05f, boundingBox.height / 2f + 0.05f, boundingBox.depth / 2f + 0.05f);
                 bbCube.y -= 0.05f;
-                entityRenderer.render(bbCube, camera, worldColor, pointLights, spotLights, directionalLight, distanceFog);
+                if(render)
+                    entityRenderer.render(bbCube, camera, worldColor, pointLights, spotLights, directionalLight, distanceFog);
             }
         }
         else if(body instanceof Terrain terrain)
         {
-            terrainRenderer.render(terrain, camera, worldColor, previousPointLights, previousSpotLights, directionalLight, distanceFog);
+            if(render)
+                terrainRenderer.render(terrain, camera, worldColor, previousPointLights, previousSpotLights, directionalLight, distanceFog);
         }
         else if(body instanceof HorizontalList horizontalList)
         {
             //guiRenderer.render(horizontalList);
-            toRender.add(horizontalList);
+            if(render)
+                toRender.add(horizontalList);
             for(Component component : horizontalList.components)
             {
-                updateTree(component, delta);
+                updateTree(component, delta, types, fbo, color, depth, update);
             }
         }
         else if(body instanceof VerticalList verticalList)
         {
             //guiRenderer.render(verticalList);
-            toRender.add(verticalList);
+            if(render)
+                toRender.add(verticalList);
             for(Component component : verticalList.components)
             {
-                updateTree(component, delta);
+                updateTree(component, delta, types, fbo, color, depth, update);
             }
         }
         else if(body instanceof Text text)
         {
             //guiRenderer.render(text);
-            toRender.add(text);
+            if(render)
+                toRender.add(text);
             for(Map.Entry<String, Body> entry1 : text.children.entrySet())
             {
                 if(entry1.getValue() instanceof TextCharacter textCharacter)
                 {
-                    textRenderer.render(textCharacter);
+                    if(render)
+                        textRenderer.render(textCharacter);
                 }
             }
-            text.update(delta);
+            if(update)
+                text.update(delta);
             for(Map.Entry<String, Body> entry1 : text.children.entrySet())
             {
                 if(entry1.getValue() instanceof TextCharacter textCharacter)
                 {
                     //textRenderer.draw(textCharacter);
-                    toRender.add(textCharacter);
+                    if(render)
+                        toRender.add(textCharacter);
                 }
             }
         }
@@ -200,7 +253,8 @@ public class Scene implements Context
         else if(body instanceof Component component)
         {
             //guiRenderer.render(component);
-            toRender.add(component);
+            if(render)
+                toRender.add(component);
         }
         else if(body instanceof PointLight pointLight)
         {
@@ -211,9 +265,14 @@ public class Scene implements Context
         {
             for(Map.Entry<String, Body> entry : body.children.entrySet())
             {
-                updateTree(entry.getValue(), delta);
+                updateTree(entry.getValue(), delta, types, fbo, color, depth, update);
             }
         }
+    }
+
+    private void updateTree(Body body, float delta)
+    {
+        updateTree(body, delta, null, 0, null, null, true);
     }
 
     private void updateTreePhysics(Body body, float delta)
@@ -240,7 +299,8 @@ public class Scene implements Context
         previousCollisionShape3ds = new ArrayList<>(collisionShape3ds);
         collisionShape3ds.clear();
         Vector3f direction = rayCast.getRay(this, (float) mouseInput.getX(), (float) mouseInput.getY());
-        ray.move(direction.x / 100f, direction.y / 100f, direction.z / 100);
+        float s = ray.maxDistance / (Looper.getDelta() / delta);
+        ray.move(direction.x * s, direction.y * s, direction.z * s);
     }
 
     public void update(float delta) {}
@@ -264,11 +324,13 @@ public class Scene implements Context
         terrainRenderer = new TerrainRenderer();
         fxaaRenderer = new FXAARenderer();
         skyboxRenderer = new SkyboxRenderer();
+        depthBufferRenderer = new DepthBufferRenderer();
         entityRenderer.init(this);
         guiRenderer.init(this);
         textRenderer.init(this);
         terrainRenderer.init(this);
         fxaaRenderer.init();
+        depthBufferRenderer.init();
         fontArial = objectLoader.loadFont(getClass(), "/fonts/arial.ttf");
         fontOpenSans = objectLoader.loadFont(getClass(), "/fonts/openSans.ttf");
         fontRoboto = objectLoader.loadFont(getClass(), "/fonts/roboto.ttf");
@@ -305,6 +367,14 @@ public class Scene implements Context
     {
         fbo = GL30.glGenFramebuffers();
         frame = objectLoader.loadTexture(window.getWidth(), window.getHeight());
+
+        shadowFbo = GL30.glGenFramebuffers();
+        int tex = GL13.glGenTextures();
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, tex);
+        GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL14.GL_DEPTH_COMPONENT16, 1000, 1000, 0,
+                GL11.GL_DEPTH_COMPONENT, GL11.GL_FLOAT, (ByteBuffer) null);
+
+        shadowDepth = new Texture(tex, 1, GL11.GL_DEPTH_COMPONENT);
     }
 
     @Override
@@ -317,6 +387,7 @@ public class Scene implements Context
         guiRenderer.cleanup();
         textRenderer.cleanup();
         //fxaaRenderer.cleanup();
+        depthBufferRenderer.cleanup();
         bodies.clear();
         objectLoader.cleanup();
         GL30.glDeleteFramebuffers(fbo);

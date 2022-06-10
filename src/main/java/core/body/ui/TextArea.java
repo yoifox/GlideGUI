@@ -124,6 +124,10 @@ public class TextArea extends Button
         return text.getText();
     }
 
+    public boolean isFocused() {
+        return isFocused;
+    }
+
     @Override
     public void onCreate()
     {
