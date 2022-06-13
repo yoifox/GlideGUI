@@ -16,6 +16,8 @@ public class TextArea extends Button
     private final Text text;
     public boolean adjustWidth = true, adjustHeight = true;
     public boolean multiLine = true;
+    public int maxLength = 150;
+    private int textSize;
     Component cursor;
     int cursorPos = -1;
 
@@ -24,9 +26,11 @@ public class TextArea extends Button
         super(width, height);
         text = new Text("", textSize, font);
         addChild(text);
-        cursor = new Component(1, textSize, Color.COLOR_BLACK);
+        cursor = new Component(2, textSize, Color.COLOR_BLACK);
         cursor.setPosition(getX(), getY());
+        cursor.visible = false;
         addChild(cursor);
+        this.textSize = textSize;
     }
 
     private void updateCursorPosition()
@@ -36,7 +40,19 @@ public class TextArea extends Button
             public void run() {
                 if(cursorPos == -1)
                 {
-                    cursor.setPosition(getX(), getY());
+                    if(text.getText().length() == 0)
+                    {
+                        if(getTextDirection() == Text.LEFT_TO_RIGHT)
+                            cursor.setPosition(getTopLeftCorner().x, getTopLeftCorner().y);
+                        else if(getTextDirection() == Text.RIGHT_TO_LEFT)
+                            cursor.setPosition(getTopLeftCorner().x + getWidth(), getTopLeftCorner().y);
+                        else if(getTextDirection() == Text.CENTER)
+                            cursor.setPosition(getTopLeftCorner().x + getWidth() / 2f, getTopLeftCorner().y + getHeight() / 2f - textSize / 2f);
+                        return;
+                    }
+                    TextCharacter firstChar = text.getCharAt(0);
+                    if(firstChar == null) return;
+                    cursor.setPosition(firstChar.getX(), firstChar.getY() - firstChar.descent);
                     return;
                 }
                 TextCharacter lastChar = text.getCharAt(cursorPos);
@@ -49,8 +65,8 @@ public class TextArea extends Button
                             doNextFrame(new Runnable() {
                                 @Override
                                 public void run() {
-                                    cursor.setPosition(lastChar.getX() + lastChar.getWidth() + 1, lastChar.getY());
-                                    cursor.height = lastChar.getHeight();
+                                    cursor.setPosition(lastChar.getX() + lastChar.getWidth() + 1, lastChar.getY() - lastChar.descent);
+                                    cursor.height = textSize - 4;
                                 }
                             });
                         }
@@ -61,8 +77,8 @@ public class TextArea extends Button
                     doNextFrame(new Runnable() {
                         @Override
                         public void run() {
-                            cursor.setPosition(lastChar.getX() + lastChar.getWidth() + 1, lastChar.getY());
-                            cursor.height = lastChar.getHeight();
+                            cursor.setPosition(lastChar.getX() + lastChar.getWidth() + 1, lastChar.getY() - lastChar.descent);
+                            cursor.height = textSize - 4;
                         }
                     });
                 }
@@ -94,14 +110,20 @@ public class TextArea extends Button
     public TextArea setText(String text)
     {
         this.text.setText(text);
-        updateCursorPosition();
+        doNextFrame(() -> {
+            cursorPos = text.length() - 1;
+            updateCursorPosition();
+        });
         return this;
     }
 
     public TextArea append(String text)
     {
         this.text.append(text);
-        updateCursorPosition();
+        doNextFrame(() -> {
+            cursorPos = text.length() - 1;
+            updateCursorPosition();
+        });
         return this;
     }
 
@@ -117,6 +139,11 @@ public class TextArea extends Button
         text.setTextDirection(textDirection);
         updateCursorPosition();
         return this;
+    }
+
+    public int getTextDirection()
+    {
+        return text.getTextDirection();
     }
 
     public String getText()
@@ -135,7 +162,7 @@ public class TextArea extends Button
         scene.keyInput.addCharCallback(new Keyboard.CharCallback() {
             @Override
             public void onCharTyped(Window window, char key) {
-                if(isFocused)
+                if(isFocused && text.getText().length() != maxLength)
                 {
                     addChar(key);
                     cursorPos++;
@@ -156,7 +183,7 @@ public class TextArea extends Button
                         cursorPos--;
                     }
                 }
-                else if(action == GLFW.GLFW_KEY_ENTER)
+                else if(action == GLFW.GLFW_KEY_ENTER && text.getText().length() != maxLength)
                 {
                     if(multiLine)
                     {
@@ -203,7 +230,7 @@ public class TextArea extends Button
             text.center();
 
         time += delta;
-        if(time > 0.25f)
+        if(time > 0.2f)
         {
             time = 0;
             if(isFocused)
@@ -214,6 +241,7 @@ public class TextArea extends Button
             if(!MathUtil.pointInQuad(this, (float) scene.mouseInput.getX(), (float) scene.mouseInput.getY()))
             {
                 isFocused = false;
+                updateCursorPosition();
                 cursor.visible = false;
             }
         }
@@ -257,6 +285,11 @@ public class TextArea extends Button
                 updateCursorPosition();
             }
             else if(text.getTextDirection() == Text.LEFT_TO_RIGHT)
+            {
+                cursorPos = min - 1;
+                updateCursorPosition();
+            }
+            else if(text.getTextDirection() == Text.CENTER)
             {
                 cursorPos = min - 1;
                 updateCursorPosition();

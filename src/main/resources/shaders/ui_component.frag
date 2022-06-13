@@ -64,8 +64,6 @@ void main()
 {
     pixelUv = fragUv * componentSize;
     actualPixelUv = fragUv * componentSize;
-    actualPixelUv.y = pixelUv.y;
-    actualPixelUv.x = pixelUv.x;
 
     windowPixel = vec2(dimensions.x + dimensions.width * fragUv.x, dimensions.y + dimensions.height * fragUv.y);
 
@@ -154,14 +152,13 @@ bool isInsideBorder()
     actualPixelUv.x <= color.borderWidth || //left
     actualPixelUv.x >= componentSize.x-color.borderWidth || //right
     actualPixelUv.y <= color.borderWidth || //top
-    actualPixelUv.y >= componentSize.y-color.borderWidth); //bottom
+    actualPixelUv.y > componentSize.y-color.borderWidth); //bottom
 }
 
 int isOutsideShape()
 {
     bool outsideRoundness = false;
-    float ratio = componentSize.x;
-    if(componentSize.x > componentSize.y) ratio = componentSize.y;
+    float ratio = min(componentSize.x, componentSize.y);
 
     //---------top-left-roundness---------//
     float d = length(color.roundness.x - vec2(0));

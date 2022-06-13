@@ -288,6 +288,7 @@ public class Scene implements Context
         body.updatePhysics(delta);
     }
 
+    public float rayStep = -1;
     public synchronized void updatePhysics(float delta)
     {
         if(Float.isInfinite(delta)) delta = 0;
@@ -299,8 +300,12 @@ public class Scene implements Context
         previousCollisionShape3ds = new ArrayList<>(collisionShape3ds);
         collisionShape3ds.clear();
         Vector3f direction = rayCast.getRay(this, (float) mouseInput.getX(), (float) mouseInput.getY());
-        float s = ray.maxDistance / (Looper.getDelta() / delta);
-        ray.move(direction.x * s, direction.y * s, direction.z * s);
+        //float s = ray.maxDistance / (Looper.getDelta() / delta);
+        //ray.move(direction.x * s, direction.y * s, direction.z * s);
+        if(rayStep == -1)
+            ray.move(direction.x / ray.maxDistance, direction.y / ray.maxDistance, direction.z / ray.maxDistance);
+        else
+            ray.move(direction.x * rayStep, direction.y * rayStep, direction.z * rayStep);
     }
 
     public void update(float delta) {}
