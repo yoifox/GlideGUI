@@ -12,7 +12,7 @@ import org.lwjgl.opengl.GL30;
 
 public class DepthBufferRenderer
 {
-    Shader shader;
+    protected Shader shader;
     public void init()
     {
         shader = new Shader(Util.loadResourceString(getClass(), "/shaders/depth_buffer.vert"),

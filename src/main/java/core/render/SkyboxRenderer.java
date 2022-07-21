@@ -15,9 +15,9 @@ import org.lwjgl.opengl.GL30;
 
 public class SkyboxRenderer
 {
-    private static final float SIZE = 500f;
-    private Shader shader;
-    private Scene scene;
+    protected static final float SIZE = 500f;
+    protected Shader shader;
+    protected Scene scene;
 
     public void init(Scene scene)
     {

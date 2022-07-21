@@ -26,11 +26,11 @@ import java.util.Map;
 
 public class TextRenderer
 {
-    Window window;
-    Scene scene;
-    Shader shader;
-    Mesh quad;
-    private final Map<String, TextureInfo> textCharacterStringBitmapMap = new HashMap<>();
+    protected Window window;
+    protected Scene scene;
+    protected Shader shader;
+    protected Mesh quad;
+    protected final Map<String, TextureInfo> textCharacterStringBitmapMap = new HashMap<>();
 
     public void init(Scene scene)
     {
@@ -186,7 +186,7 @@ public class TextRenderer
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
     }
 
-    private static Texture loadTexture(ByteBuffer buffer, int width, int height)
+    protected static Texture loadTexture(ByteBuffer buffer, int width, int height)
     {
         int id = GL11.glGenTextures();
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, id);
@@ -232,7 +232,7 @@ public class TextRenderer
         shader.cleanup();
     }
 
-    private static class TextureInfo
+    protected static class TextureInfo
     {
         public Texture texture;
         public int width;

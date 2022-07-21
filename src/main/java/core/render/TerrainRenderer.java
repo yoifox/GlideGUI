@@ -20,9 +20,9 @@ import java.util.List;
 
 public class TerrainRenderer
 {
-    public Shader shader;
-    public Window window;
-    public Scene scene;
+    protected Shader shader;
+    protected Window window;
+    protected Scene scene;
 
 
     public void init(Scene scene)
@@ -96,7 +96,7 @@ public class TerrainRenderer
         shader.unbind();
     }
 
-    private void bind(Terrain terrain, Material material)
+    protected void bind(Terrain terrain, Material material)
     {
         GL30.glBindVertexArray(terrain.mesh.getVao());
         GL20.glEnableVertexAttribArray(0);
@@ -132,7 +132,7 @@ public class TerrainRenderer
         }
     }
 
-    private void unbind()
+    protected void unbind()
     {
         GL20.glDisableVertexAttribArray(0);
         GL20.glDisableVertexAttribArray(1);

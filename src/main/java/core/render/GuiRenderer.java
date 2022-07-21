@@ -23,10 +23,10 @@ import java.lang.Math;
 
 public class GuiRenderer
 {
-    private Shader shader;
-    private Window window;
-    private Scene scene;
-    private Mesh quad;
+    protected Shader shader;
+    protected Window window;
+    protected Scene scene;
+    protected Mesh quad;
     public void init(Scene scene)
     {
         this.scene = scene;

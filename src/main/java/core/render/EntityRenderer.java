@@ -24,9 +24,9 @@ import java.util.List;
 
 public class EntityRenderer
 {
-    public Shader shader;
-    public Window window;
-    public Scene scene;
+    protected Shader shader;
+    protected Window window;
+    protected Scene scene;
 
     public void init(Scene scene)
     {
@@ -116,7 +116,7 @@ public class EntityRenderer
 
     float animTime = 0;
 
-    private void bind(Entity entity)
+    protected void bind(Entity entity)
     {
         GL30.glBindVertexArray(entity.mesh.getVao());
         GL20.glEnableVertexAttribArray(0);
@@ -237,7 +237,7 @@ public class EntityRenderer
         }
     }
 
-    private void unbind()
+    protected void unbind()
     {
         GL20.glDisableVertexAttribArray(0);
         GL20.glDisableVertexAttribArray(1);

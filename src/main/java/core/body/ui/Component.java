@@ -478,7 +478,7 @@ public class Component extends Body2d
                     img = renderDocument(w3cDoc);
                     bc.texture = scene.objectLoader.loadTexture(img);
                 } catch (MalformedURLException e) {
-                    e.printStackTrace();
+                    throw new RuntimeException(e.getMessage(), e);
                 }
             }
         };
@@ -522,7 +522,7 @@ public class Component extends Body2d
         engine.getConfig().setLoadImages(true);
         engine.getConfig().setLoadBackgroundImages(true);
 
-        engine.createLayout(new Dimension(getWidth(), getHeight()));
+        engine.createLayout(new Dimension((int) getWidth(), (int) getHeight()));
         return engine.getImage();
     }
 }

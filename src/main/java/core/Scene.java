@@ -17,7 +17,7 @@ import core.render.*;
 import java.nio.ByteBuffer;
 import java.util.*;
 
-public class Scene implements Context
+public abstract class Scene implements Context
 {
     public Font fontArial, fontOpenSans, fontRoboto;
 
@@ -275,17 +275,32 @@ public class Scene implements Context
         updateTree(body, delta, null, 0, null, null, true);
     }
 
+    public int numOfPhysicsSubThreads = 1;
+    private final Set<Thread> physicsSubThreads = new HashSet<>();
     private void updateTreePhysics(Body body, float delta)
     {
-        if(body instanceof CollisionShape3d collisionShape3d)
+        Runnable r = new Runnable() {
+            @Override
+            public void run() {
+                if(body instanceof CollisionShape3d collisionShape3d)
+                {
+                    collisionShape3ds.add(collisionShape3d);
+                }
+                for(Map.Entry<String, Body> entry : body.children.entrySet())
+                {
+                    updateTreePhysics(entry.getValue(), delta);
+                }
+                body.updatePhysics(delta);
+            }
+        };
+        if(body instanceof RigidBody3d && physicsSubThreads.size() < numOfPhysicsSubThreads)
         {
-            collisionShape3ds.add(collisionShape3d);
+            Thread thread = new Thread(r);
+            thread.start();
+            physicsSubThreads.add(thread);
         }
-        for(Map.Entry<String, Body> entry : body.children.entrySet())
-        {
-            updateTreePhysics(entry.getValue(), delta);
-        }
-        body.updatePhysics(delta);
+        else
+            r.run();
     }
 
     public float rayStep = -1;
@@ -306,6 +321,15 @@ public class Scene implements Context
             ray.move(direction.x / ray.maxDistance, direction.y / ray.maxDistance, direction.z / ray.maxDistance);
         else
             ray.move(direction.x * rayStep, direction.y * rayStep, direction.z * rayStep);
+
+        for(Thread thread : physicsSubThreads) {
+            try {
+                thread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        physicsSubThreads.clear();
     }
 
     public void update(float delta) {}

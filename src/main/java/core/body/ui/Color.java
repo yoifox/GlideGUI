@@ -2,16 +2,6 @@ package core.body.ui;
 
 import core.body.ColorValue;
 import core.body.Texture;
-import cz.vutbr.web.css.MediaSpec;
-import cz.vutbr.web.css.MediaSpecAll;
-import org.fit.cssbox.awt.GraphicsEngine;
-import org.fit.cssbox.css.CSSNorm;
-import org.fit.cssbox.css.DOMAnalyzer;
-import org.fit.cssbox.layout.Dimension;
-
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.net.MalformedURLException;
 
 public class Color
 {
